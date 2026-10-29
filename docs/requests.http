@@ -1,0 +1,73 @@
+@base = http://localhost:3000/api
+@token = ISI_TOKEN_DARI_LOGIN
+@product = ISI_UUID_PRODUK
+@order = ISI_UUID_ORDER
+@sale = ISI_UUID_SALE
+
+### Kesehatan
+GET {{base}}/health
+
+### Login
+POST {{base}}/auth/login
+Content-Type: application/json
+
+{"identity":"admin","password":"ISI_PASSWORD_SEED"}
+
+### Profil
+GET {{base}}/auth/me
+Authorization: Bearer {{token}}
+
+### Produk
+GET {{base}}/products
+Authorization: Bearer {{token}}
+
+### Atur produk awal (harga contoh, ganti sesuai keputusan pemilik)
+PATCH {{base}}/products/{{product}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"price":20000,"active":true,"minimum_stock":5}
+
+### Stok pembukaan; ganti key untuk tindakan BARU, pakai ulang saat retry
+POST {{base}}/stock-adjustments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Idempotency-Key: pembukaan-lpg-001
+
+{"product_id":"{{product}}","full_delta":12,"empty_delta":15,"reason":"Saldo pembukaan terverifikasi"}
+
+### Ajukan memakai token PENGECER
+POST {{base}}/orders
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Idempotency-Key: order-pengecer-001
+
+{"items":[{"product_id":"{{product}}","quantity":4}]}
+
+### Konfirmasi memakai token ADMIN/KARYAWAN
+POST {{base}}/orders/{{order}}/confirm
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Idempotency-Key: konfirmasi-order-001
+
+{}
+
+### Serah-terima dan bon
+POST {{base}}/orders/{{order}}/complete
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Idempotency-Key: serah-terima-001
+
+{"payment_type":"BON","amount_paid":30000,"returns":[{"product_id":"{{product}}","empty_returned":3}]}
+
+### Bayar lanjutan
+POST {{base}}/sales/{{sale}}/payments
+Authorization: Bearer {{token}}
+Content-Type: application/json
+Idempotency-Key: pembayaran-lanjutan-001
+
+{"amount":50000,"method":"TUNAI"}
+
+### Laporan admin
+GET {{base}}/reports/receivables?page=1&limit=25
+Authorization: Bearer {{token}}
