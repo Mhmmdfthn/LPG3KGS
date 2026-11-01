@@ -1,10 +1,52 @@
+# Dependencies
 node_modules/
+.npm-cache/
+
+# Nuxt & Build Output
 .nuxt/
 .output/
+.nitro/
+dist/
+coverage/
+
+# Environment & Secrets
 .env
 .env.*
 !.env.example
-coverage/
+
+# Logs & Temporary files
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+*.bak
 .data/
-.npm-cache/
+
+# OS Specific
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE & Editor Configs
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# AI Assistant & Internal Agent Instructions
+AGENTS.md
+agents.md
+*agent-guidelines*
+.agent/
+.agents/
+.gemini/
+.antigravity/

@@ -1,0 +1,278 @@
+/* ==========================================================================
+   Design System - Sistem Pemesanan dan Manajemen Pangkalan LPG (LPG3KGS)
+   Berdasarkan docs/frontend/03-design-system.md
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Primary */
+  --color-primary-900: #123047;
+  --color-primary-800: #143e59;
+  --color-primary-700: #174C68;
+  --color-primary-600: #176B78;
+  --color-primary-500: #1b8595;
+  --color-primary-100: #E7F2F3;
+  --color-primary-50:  #F2F8F9;
+
+  /* Neutrals & Surfaces */
+  --color-bg:          #F7F9FB;
+  --color-surface:     #FFFFFF;
+  --color-surface-subtle: #F1F5F9;
+  --color-text:        #17212B;
+  --color-text-muted:  #647381;
+  --color-text-subtle: #8A99A8;
+  --color-border:      #E2E8EE;
+  --color-border-dark: #CBD5E1;
+
+  /* Status Colors */
+  --color-success:     #16804A;
+  --color-success-bg:  #E8F6EE;
+  --color-success-border: #B7E4C7;
+
+  --color-warning:     #A96308;
+  --color-warning-bg:  #FFF4DE;
+  --color-warning-border: #FDE0B2;
+
+  --color-danger:      #B4232F;
+  --color-danger-bg:   #FDECEE;
+  --color-danger-border: #F8B4B9;
+
+  --color-info:        #245EA8;
+  --color-info-bg:     #EAF2FC;
+  --color-info-border: #BFD7F8;
+
+  /* Spacing Scale (4px multiple) */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --font-size-xs: 11px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 28px;
+  --font-size-kpi: 32px;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(18, 48, 71, 0.05);
+  --shadow-sm: 0 1px 3px rgba(18, 48, 71, 0.08), 0 1px 2px rgba(18, 48, 71, 0.04);
+  --shadow-md: 0 4px 12px rgba(18, 48, 71, 0.07);
+  --shadow-lg: 0 10px 25px -5px rgba(18, 48, 71, 0.12), 0 8px 10px -6px rgba(18, 48, 71, 0.08);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+
+  /* Layout Dimensions */
+  --sidebar-width: 250px;
+  --header-height: 64px;
+  --bottom-nav-height: 60px;
+  --container-max-width: 1280px;
+}
+
+/* ==========================================================================
+   CSS Reset & Base
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-normal);
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background-color: var(--color-bg);
+}
+
+a {
+  color: var(--color-primary-700);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-600);
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   Global Utility Classes
+   ========================================================================== */
+
+/* Layout Containers */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+}
+
+/* Flexbox & Grid */
+.flex { display: flex; }
+.inline-flex { display: inline-flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1 1 0%; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+
+.grid { display: grid; }
+.grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (min-width: 640px) {
+  .sm-grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .lg-grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lg-grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Typography Utilities */
+.text-xs { font-size: var(--font-size-xs); }
+.text-sm { font-size: var(--font-size-sm); }
+.text-base { font-size: var(--font-size-base); }
+.text-md { font-size: var(--font-size-md); }
+.text-lg { font-size: var(--font-size-lg); }
+.text-xl { font-size: var(--font-size-xl); }
+.text-2xl { font-size: var(--font-size-2xl); }
+.text-kpi { font-size: var(--font-size-kpi); font-weight: 700; line-height: 1.1; }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+.text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-primary-700); }
+.text-success { color: var(--color-success); }
+.text-warning { color: var(--color-warning); }
+.text-danger { color: var(--color-danger); }
+.text-info { color: var(--color-info); }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+/* Spacing */
+.p-2 { padding: var(--space-2); }
+.p-4 { padding: var(--space-4); }
+.p-6 { padding: var(--space-6); }
+.py-2 { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.mt-4 { margin-top: var(--space-4); }
+
+/* Common Surface / Card Box */
+.card-box {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+  padding: var(--space-4);
+  transition: box-shadow var(--transition-fast);
+}
+
+@media (min-width: 640px) {
+  .card-box {
+    padding: var(--space-6);
+  }
+}
+
+/* Responsive Hide/Show */
+.hidden { display: none !important; }
+@media (max-width: 1023px) {
+  .hide-mobile { display: none !important; }
+}
+@media (min-width: 1024px) {
+  .hide-desktop { display: none !important; }
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+

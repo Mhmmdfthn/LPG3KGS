@@ -1,0 +1,13 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'staff'
+})
+
+const route = useRoute()
+const orderId = computed(() => String(route.params.id))
+</script>
+
+<template>
+  <OrderDetailManager :order-id="orderId" role="staff" />
+</template>
+
