@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { formatQuantity } from '~/composables/useFormatters'
-import type { ReceiptPayload } from '~/composables/useMockInventory'
+import type { ReceiptPayload } from '~/composables/useInventory'
 
 definePageMeta({ layout: 'staff' })
 
-const { products } = useMockProducts()
-const { recordReceipt, getBalance } = useMockInventory()
+const { products } = useProducts()
+const { recordReceipt, getBalance } = useInventory()
 const { showSuccess, showError } = useNotification()
-const { currentUser } = useMockAuth()
+const { currentUser } = useAuth()
 
 const activeProducts = computed(() => products.value.filter(p => p.active))
 
@@ -48,8 +48,8 @@ function validate(): boolean {
   clearErrors()
   let ok = true
   if (!selectedProductId.value) { formErrors.product = 'Pilih produk terlebih dahulu.'; ok = false }
-  if (!Number.isInteger(fullReceived.value) || fullReceived.value < 0) { formErrors.fullReceived = 'Jumlah harus bilangan bulat ≥ 0.'; ok = false }
-  if (!Number.isInteger(emptySent.value) || emptySent.value < 0) { formErrors.emptySent = 'Jumlah harus bilangan bulat ≥ 0.'; ok = false }
+  if (!Number.isInteger(fullReceived.value) || fullReceived.value < 0) { formErrors.fullReceived = 'Jumlah harus bilangan bulat ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¥ 0.'; ok = false }
+  if (!Number.isInteger(emptySent.value) || emptySent.value < 0) { formErrors.emptySent = 'Jumlah harus bilangan bulat ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¥ 0.'; ok = false }
   if (fullReceived.value === 0 && emptySent.value === 0) { formErrors.fullReceived = 'Minimal salah satu nilai harus > 0.'; ok = false }
   if (selectedBalance.value && emptySent.value > selectedBalance.value.empty_qty) {
     formErrors.emptySent = `Melebihi stok kosong (${selectedBalance.value.empty_qty} tabung tersedia).`
@@ -105,11 +105,11 @@ function parsePosInt(e: Event): number {
   <div class="page-receipts">
     <div class="page-header">
       <div>
-        <h1 class="page-title">🚚 Catat Penerimaan Pasokan</h1>
+        <h1 class="page-title">ÃƒÂ°Ã…Â¸Ã…Â¡Ã…Â¡ Catat Penerimaan Pasokan</h1>
         <p class="page-desc">Catat tabung penuh yang diterima dan tabung kosong yang dikirim ke agen.</p>
       </div>
       <NuxtLink to="/staff/inventory">
-        <BaseButton variant="ghost">← Ringkasan Stok</BaseButton>
+        <BaseButton variant="ghost">ÃƒÂ¢Ã¢â‚¬Â Ã‚Â Ringkasan Stok</BaseButton>
       </NuxtLink>
     </div>
 
@@ -179,9 +179,9 @@ function parsePosInt(e: Event): number {
           </div>
         </div>
         <div v-if="(previewEmpty ?? 0) < 0" class="preview-warning">
-          ⚠️ Tabung kosong dikirim melebihi saldo. Kurangi jumlah.
+          ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Tabung kosong dikirim melebihi saldo. Kurangi jumlah.
         </div>
-        <p class="preview-note">Tersedia = Penuh − Dialokasikan (min. 0). Tabung kosong bukan stok jual.</p>
+        <p class="preview-note">Tersedia = Penuh ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Dialokasikan (min. 0). Tabung kosong bukan stok jual.</p>
       </div>
     </div>
 
@@ -199,7 +199,7 @@ function parsePosInt(e: Event): number {
       </template>
       <template #footer>
         <BaseButton variant="secondary" :disabled="isSubmitting" @click="isConfirmOpen = false">Batal</BaseButton>
-        <BaseButton variant="primary" :loading="isSubmitting" @click="handleConfirm">✅ Konfirmasi & Simpan</BaseButton>
+        <BaseButton variant="primary" :loading="isSubmitting" @click="handleConfirm">ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Konfirmasi & Simpan</BaseButton>
       </template>
     </BaseModal>
   </div>

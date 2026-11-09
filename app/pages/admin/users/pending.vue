@@ -3,7 +3,8 @@ definePageMeta({
   layout: 'admin'
 })
 
-const { users, approveRetailer, rejectRetailer } = useMockAuth()
+const { users, loadAccounts, approveRetailer, rejectRetailer } = useAuth()
+onMounted(() => loadAccounts('/retailers/pending'))
 const { showSuccess, showError } = useNotification()
 
 // State Filter & Pencarian
@@ -152,7 +153,7 @@ async function handleConfirmReject() {
     <div class="page-header">
       <div class="header-left">
         <div class="breadcrumb-nav mb-1">
-          <NuxtLink to="/admin/users" class="breadcrumb-link">← Kembali ke Manajemen Pengguna</NuxtLink>
+          <NuxtLink to="/admin/users" class="breadcrumb-link">â† Kembali ke Manajemen Pengguna</NuxtLink>
         </div>
         <h1 class="page-title">Persetujuan Pengecer (PG-07)</h1>
         <p class="page-subtitle">
@@ -172,7 +173,7 @@ async function handleConfirmReject() {
 
     <!-- Alert Edukasi PRD -->
     <div class="info-callout mb-6">
-      <div class="callout-icon">💡</div>
+      <div class="callout-icon">ðŸ’¡</div>
       <div class="callout-text">
         <strong>Aturan Bisnis PRD:</strong> Akun pengecer baru mandiri berstatus <code>PENDING</code> dan belum dapat melakukan pemesanan sampai diverifikasi dan disetujui Admin. Sesuai regulasi, sistem <em>tidak meminta atau menyimpan NIK/KTP</em>.
       </div>
@@ -227,8 +228,8 @@ async function handleConfirmReject() {
                 </td>
                 <td>
                   <div class="contact-cell">
-                    <span class="contact-phone">📞 {{ user.contact }}</span>
-                    <span v-if="user.email" class="contact-email">✉️ {{ user.email }}</span>
+                    <span class="contact-phone">ðŸ“ž {{ user.contact }}</span>
+                    <span v-if="user.email" class="contact-email">âœ‰ï¸ {{ user.email }}</span>
                     <span v-else class="text-muted text-xs">-</span>
                   </div>
                 </td>
@@ -280,7 +281,7 @@ async function handleConfirmReject() {
             <div class="card-header-row">
               <div>
                 <h3 class="m-card-title">{{ user.business_name || user.name }}</h3>
-                <span class="m-card-subtitle">{{ user.name }} • <code class="text-xs">@{{ user.username }}</code></span>
+                <span class="m-card-subtitle">{{ user.name }} â€¢ <code class="text-xs">@{{ user.username }}</code></span>
               </div>
               <StatusBadge :status="user.status" size="sm" />
             </div>
@@ -288,11 +289,11 @@ async function handleConfirmReject() {
             <div class="card-body-row">
               <div class="m-info-item">
                 <span class="m-info-label">Kontak:</span>
-                <span class="m-info-value">📞 {{ user.contact }}</span>
+                <span class="m-info-value">ðŸ“ž {{ user.contact }}</span>
               </div>
               <div v-if="user.email" class="m-info-item">
                 <span class="m-info-label">Email:</span>
-                <span class="m-info-value">✉️ {{ user.email }}</span>
+                <span class="m-info-value">âœ‰ï¸ {{ user.email }}</span>
               </div>
               <div class="m-info-item">
                 <span class="m-info-label">Terdaftar:</span>
@@ -375,7 +376,7 @@ async function handleConfirmReject() {
     >
       <div v-if="selectedUser" class="detail-body">
         <div class="detail-header-card">
-          <div class="detail-avatar">🏪</div>
+          <div class="detail-avatar">ðŸª</div>
           <div>
             <h3 class="detail-business-name">{{ selectedUser.business_name || 'Tanpa Nama Usaha' }}</h3>
             <p class="detail-owner-name">Penanggung Jawab: {{ selectedUser.name }}</p>
@@ -398,12 +399,12 @@ async function handleConfirmReject() {
 
           <div class="detail-item">
             <span class="detail-label">Nomor WhatsApp / HP</span>
-            <span class="detail-val">📞 {{ selectedUser.contact }}</span>
+            <span class="detail-val">ðŸ“ž {{ selectedUser.contact }}</span>
           </div>
 
           <div class="detail-item">
             <span class="detail-label">Alamat Email</span>
-            <span class="detail-val">{{ selectedUser.email ? '✉️ ' + selectedUser.email : 'Tidak dicantumkan' }}</span>
+            <span class="detail-val">{{ selectedUser.email ? 'âœ‰ï¸ ' + selectedUser.email : 'Tidak dicantumkan' }}</span>
           </div>
 
           <div class="detail-item">
@@ -456,7 +457,7 @@ async function handleConfirmReject() {
       @close="isApproveModalOpen = false"
     >
       <div v-if="userToApprove" class="confirm-content">
-        <div class="confirm-icon-box success-icon-box">✓</div>
+        <div class="confirm-icon-box success-icon-box">âœ“</div>
         <h4 class="confirm-title">Setujui Pendaftaran Akun Pengecer?</h4>
         <p class="confirm-desc">
           Anda akan menyetujui akun pengecer berikut:
@@ -510,7 +511,7 @@ async function handleConfirmReject() {
       @close="isRejectModalOpen = false"
     >
       <div v-if="userToReject" class="confirm-content">
-        <div class="confirm-icon-box danger-icon-box">⚠️</div>
+        <div class="confirm-icon-box danger-icon-box">âš ï¸</div>
         <h4 class="confirm-title">Tolak Pendaftaran Pengecer?</h4>
         <p class="confirm-desc">
           Akun <strong>{{ userToReject.business_name || userToReject.name }}</strong> (<code>@{{ userToReject.username }}</code>) akan ditolak dan tidak diizinkan masuk ke sistem pemesanan.

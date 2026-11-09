@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { formatQuantity } from '~/composables/useFormatters'
-import type { AdjustmentPayload } from '~/composables/useMockInventory'
+import type { AdjustmentPayload } from '~/composables/useInventory'
 
 definePageMeta({ layout: 'admin' })
 
-const { products } = useMockProducts()
-const { balances, recordAdjustment, getBalance } = useMockInventory()
+const { products } = useProducts()
+const { balances, recordAdjustment, getBalance } = useInventory()
 const { showSuccess, showError } = useNotification()
-const { currentUser } = useMockAuth()
+const { currentUser } = useAuth()
 
 const activeProducts = computed(() => products.value.filter(p => p.active))
 
-// ─── Form State ───────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Form State ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const selectedProductId = ref('')
 const fullDelta = ref(0)
 const emptyDelta = ref(0)
@@ -61,7 +61,7 @@ const isPreviewNegative = computed(() => {
          (previewEmpty.value !== null && previewEmpty.value < 0)
 })
 
-// ─── Validasi ─────────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Validasi ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function validate(): boolean {
   clearErrors()
   let ok = true
@@ -100,7 +100,7 @@ function validate(): boolean {
   return ok
 }
 
-// ─── Modal Konfirmasi ─────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Modal Konfirmasi ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const isConfirmOpen = ref(false)
 const isSubmitting = ref(false)
 
@@ -161,17 +161,17 @@ function deltaCls(val: number): string {
     <!-- Header -->
     <div class="page-header">
       <div>
-        <h1 class="page-title">⚙️ Koreksi Stok Fisik</h1>
+        <h1 class="page-title">ÃƒÂ¢Ã…Â¡Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¸Ã‚Â Koreksi Stok Fisik</h1>
         <p class="page-desc">Koreksi saldo inventaris berdasarkan penghitungan fisik. Hanya Admin.</p>
       </div>
       <NuxtLink to="/admin/inventory">
-        <BaseButton variant="ghost">← Ringkasan Stok</BaseButton>
+        <BaseButton variant="ghost">ÃƒÂ¢Ã¢â‚¬Â Ã‚Â Ringkasan Stok</BaseButton>
       </NuxtLink>
     </div>
 
     <!-- Warning Banner -->
     <div class="warning-banner">
-      ⚠️ <strong>Perhatian:</strong> Koreksi stok adalah tindakan sensitif yang langsung mengubah saldo inventaris.
+      ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â <strong>Perhatian:</strong> Koreksi stok adalah tindakan sensitif yang langsung mengubah saldo inventaris.
       Pastikan penghitungan fisik sudah selesai sebelum mencatat koreksi. Setiap perubahan akan dicatat dalam riwayat pergerakan stok.
     </div>
 
@@ -189,7 +189,7 @@ function deltaCls(val: number): string {
           >
             <option value="">-- Pilih Produk --</option>
             <option v-for="p in products" :key="p.id" :value="p.id">
-              {{ p.name }} ({{ p.size_kg }} kg){{ !p.active ? ' — Nonaktif' : '' }}
+              {{ p.name }} ({{ p.size_kg }} kg){{ !p.active ? ' ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â Nonaktif' : '' }}
             </option>
           </select>
           <p v-if="formErrors.product" class="error-msg">{{ formErrors.product }}</p>
@@ -197,7 +197,7 @@ function deltaCls(val: number): string {
 
         <!-- Saldo Sekarang -->
         <div v-if="selectedBalance && selectedProduct" class="current-balance">
-          <p class="balance-title">Saldo Sebelum Koreksi — {{ selectedProduct.name }}</p>
+          <p class="balance-title">Saldo Sebelum Koreksi ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â {{ selectedProduct.name }}</p>
           <div class="balance-row">
             <div class="balance-item">
               <span class="bal-label">Stok Penuh</span>
@@ -232,7 +232,7 @@ function deltaCls(val: number): string {
             @input="fullDelta = parseDeltaInt($event)"
           />
           <p class="field-hint">
-            Positif (+) untuk menambah stok penuh, negatif (−) untuk mengurangi.
+            Positif (+) untuk menambah stok penuh, negatif (ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢) untuk mengurangi.
             <template v-if="selectedBalance">
               Nilai boleh antara {{ -selectedBalance.full_qty }} s.d. tak terbatas.
             </template>
@@ -253,7 +253,7 @@ function deltaCls(val: number): string {
             @input="emptyDelta = parseDeltaInt($event)"
           />
           <p class="field-hint">
-            Positif (+) untuk menambah stok kosong, negatif (−) untuk mengurangi.
+            Positif (+) untuk menambah stok kosong, negatif (ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢) untuk mengurangi.
             <template v-if="selectedBalance">
               Nilai boleh antara {{ -selectedBalance.empty_qty }} s.d. tak terbatas.
             </template>
@@ -282,7 +282,7 @@ function deltaCls(val: number): string {
             :disabled="!selectedProductId"
             @click="handlePreviewSubmit"
           >
-            ⚙️ Tinjau & Konfirmasi Koreksi
+            ÃƒÂ¢Ã…Â¡Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¸Ã‚Â Tinjau & Konfirmasi Koreksi
           </BaseButton>
         </div>
       </div>
@@ -304,7 +304,7 @@ function deltaCls(val: number): string {
             <span :class="deltaCls(fullDelta)">{{ formatDeltaDisplay(fullDelta) }}</span>
             <span :class="['preview-after', (previewFull ?? 0) < 0 ? 'qty-low' : 'qty-full']">
               {{ formatQuantity(Math.max(0, previewFull ?? 0)) }}
-              <span v-if="(previewFull ?? 0) < 0" class="neg-warn">⛔ Negatif!</span>
+              <span v-if="(previewFull ?? 0) < 0" class="neg-warn">ÃƒÂ¢Ã¢â‚¬ÂºÃ¢â‚¬Â Negatif!</span>
             </span>
           </div>
           <div class="preview-row">
@@ -313,7 +313,7 @@ function deltaCls(val: number): string {
             <span :class="deltaCls(emptyDelta)">{{ formatDeltaDisplay(emptyDelta) }}</span>
             <span :class="['preview-after', (previewEmpty ?? 0) < 0 ? 'qty-low' : 'qty-empty']">
               {{ formatQuantity(Math.max(0, previewEmpty ?? 0)) }}
-              <span v-if="(previewEmpty ?? 0) < 0" class="neg-warn">⛔ Negatif!</span>
+              <span v-if="(previewEmpty ?? 0) < 0" class="neg-warn">ÃƒÂ¢Ã¢â‚¬ÂºÃ¢â‚¬Â Negatif!</span>
             </span>
           </div>
           <div class="preview-row preview-row-divider">
@@ -325,19 +325,19 @@ function deltaCls(val: number): string {
           <div class="preview-row preview-highlight">
             <span class="preview-item-label">Tersedia</span>
             <span>{{ formatQuantity(selectedBalance.available_qty) }}</span>
-            <span>→</span>
+            <span>ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢</span>
             <span class="preview-after qty-available">{{ formatQuantity(previewAvailable ?? 0) }}</span>
           </div>
         </div>
 
         <!-- Peringatan saldo negatif -->
         <div v-if="isPreviewNegative" class="preview-error">
-          ⛔ <strong>Koreksi tidak dapat disimpan.</strong>
+          ÃƒÂ¢Ã¢â‚¬ÂºÃ¢â‚¬Â <strong>Koreksi tidak dapat disimpan.</strong>
           Delta menyebabkan saldo negatif. Sesuaikan nilai delta.
         </div>
 
         <div class="preview-rule-note">
-          Stok tersedia = Stok Penuh − Dialokasikan (min. 0).
+          Stok tersedia = Stok Penuh ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Dialokasikan (min. 0).
           Saldo reserved tidak berubah akibat koreksi stok.
         </div>
       </div>
@@ -353,7 +353,7 @@ function deltaCls(val: number): string {
       <template #body>
         <div v-if="selectedProduct && selectedBalance" class="confirm-body">
           <div class="confirm-warning">
-            ⚠️ Tindakan ini akan langsung mengubah saldo inventaris dan tidak dapat dibatalkan.
+            ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Tindakan ini akan langsung mengubah saldo inventaris dan tidak dapat dibatalkan.
             Pastikan data sudah benar.
           </div>
           <div class="confirm-grid">
@@ -398,7 +398,7 @@ function deltaCls(val: number): string {
           Batal
         </BaseButton>
         <BaseButton variant="danger" :loading="isSubmitting" @click="handleConfirm">
-          ⚙️ Simpan Koreksi
+          ÃƒÂ¢Ã…Â¡Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¸Ã‚Â Simpan Koreksi
         </BaseButton>
       </template>
     </BaseModal>

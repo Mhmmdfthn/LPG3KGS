@@ -1,44 +1,52 @@
 <script setup lang="ts">
-import { MOCK_PRODUCTS } from '~/data/mockProducts'
-import { MOCK_ORDERS } from '~/data/mockOrders'
+import type { Product } from '~/types/models'
 
 definePageMeta({
   layout: 'admin'
 })
 
 const { showSuccess, showInfo } = useNotification()
+const { api } = useApi()
+const dashboard = ref<any>(null)
+const orders = ref<any[]>([])
+async function refreshDashboard() {
+  dashboard.value = await api('/dashboard')
+  const queue = await api<{ items: any[] }>('/orders?limit=8')
+  orders.value = queue.items
+}
+onMounted(() => refreshDashboard())
 
 // Ringkasan KPI dummy sesuai spesifikasi PRD PG-04
-const kpiStats = [
+const kpiStats = computed(() => [
   {
     title: 'Stok Tersedia Dipesan',
-    value: '91 tabung',
-    sub: 'Total fisik 110 - Reserved 19',
+    value: `${dashboard.value?.inventory?.reduce((sum: number, p: Product) => sum + (p.available_qty || 0), 0) ?? 0} tabung`,
+    sub: `Total fisik ${dashboard.value?.inventory?.reduce((sum: number, p: Product) => sum + (p.full_qty || 0), 0) ?? 0} - reserved ${dashboard.value?.inventory?.reduce((sum: number, p: Product) => sum + (p.reserved_qty || 0), 0) ?? 0}`,
     icon: '📦',
     variant: 'info'
   },
   {
     title: 'Pesanan Menunggu',
-    value: '1 pesanan',
+    value: `${dashboard.value?.pending_orders ?? 0} pesanan`,
     sub: 'Memerlukan konfirmasi segera',
     icon: '⏳',
     variant: 'warning'
   },
   {
     title: 'Penjualan Hari Ini',
-    value: formatRupiah(456000),
+    value: formatRupiah(Number(dashboard.value?.sales_today || 0)),
     sub: 'Omzet penjualan (Tunai & Bon)',
     icon: '💰',
     variant: 'success'
   },
   {
     title: 'Total Piutang Usaha',
-    value: formatRupiah(200000),
+    value: formatRupiah(Number(dashboard.value?.total_receivables || 0)),
     sub: 'Saldo bon belum lunas',
     icon: '📑',
     variant: 'danger'
   }
-]
+])
 </script>
 
 <template>
@@ -54,18 +62,18 @@ const kpiStats = [
         <BaseButton variant="secondary" size="sm" @click="navigateTo('/preview-components')">
           🎨 Galeri Komponen
         </BaseButton>
-        <BaseButton variant="primary" size="sm" @click="showSuccess('Data dashboard disinkronkan!')">
+        <BaseButton variant="primary" size="sm" @click="refreshDashboard().then(() => showSuccess('Data dashboard disinkronkan!'))">
           🔄 Refresh
         </BaseButton>
       </div>
     </div>
 
     <!-- Alert Stok Minimum jika ada produk menipis -->
-    <div class="alert-banner">
+    <div v-if="dashboard?.inventory?.some((p: Product) => p.low_stock)" class="alert-banner">
       <div class="alert-icon">⚠️</div>
       <div class="alert-content">
         <strong>Peringatan Stok Minimum:</strong>
-        <span>Produk <strong>Bright Gas 5,5 kg</strong> tersisa 8 tabung (di bawah ambang batas minimum 10 tabung).</span>
+        <span>{{ dashboard.inventory.filter((p: Product) => p.low_stock).map((p: Product) => `${p.name}: ${p.available_qty} tabung`).join(', ') }}</span>
       </div>
     </div>
 
@@ -84,16 +92,16 @@ const kpiStats = [
     <!-- Quick Actions Banner -->
     <BaseCard title="Aksi Cepat Operasional" subtitle="Jalan pintas ke alur tugas penting pangkalan" class="mb-6">
       <div class="flex flex-wrap gap-3">
-        <BaseButton variant="primary" size="sm" @click="showInfo('Simulasi navigasi ke Pasokan Agen')">
+        <BaseButton variant="primary" size="sm" @click="navigateTo('/admin/inventory/receipts')">
           🚚 Catat Pasokan Agen
         </BaseButton>
-        <BaseButton variant="secondary" size="sm" @click="showInfo('Simulasi navigasi ke Penjualan Langsung')">
+        <BaseButton v-if="false" variant="secondary" size="sm" @click="showInfo('Simulasi navigasi ke Penjualan Langsung')">
           ⚡ Penjualan Langsung Tunai
         </BaseButton>
-        <BaseButton variant="secondary" size="sm" @click="showInfo('Simulasi navigasi ke Koreksi Stok')">
+        <BaseButton variant="secondary" size="sm" @click="navigateTo('/admin/inventory/adjustments')">
           ⚙️ Koreksi Stok Fisik
         </BaseButton>
-        <BaseButton variant="secondary" size="sm" @click="showInfo('Simulasi navigasi ke Pembayaran Bon')">
+        <BaseButton v-if="false" variant="secondary" size="sm" @click="showInfo('Simulasi navigasi ke Pembayaran Bon')">
           💰 Catat Pembayaran Bon
         </BaseButton>
       </div>
@@ -113,7 +121,7 @@ const kpiStats = [
           </tr>
         </template>
 
-        <tr v-for="ord in MOCK_ORDERS" :key="ord.id">
+        <tr v-for="ord in orders" :key="ord.id">
           <td><strong>{{ ord.number }}</strong></td>
           <td>
             <div>{{ ord.business_name }}</div>
@@ -127,7 +135,7 @@ const kpiStats = [
               v-if="ord.status === 'MENUNGGU_KONFIRMASI'"
               variant="primary"
               size="sm"
-              @click="showSuccess(`Membuka modal proses untuk ${ord.number}`)"
+              @click="navigateTo(`/admin/orders/${ord.id}`)"
             >
               Proses Order
             </BaseButton>
@@ -135,7 +143,7 @@ const kpiStats = [
               v-else
               variant="ghost"
               size="sm"
-              @click="showInfo(`Detail pesanan ${ord.number}`)"
+              @click="navigateTo(`/admin/orders/${ord.id}`)"
             >
               Rincian
             </BaseButton>

@@ -45,7 +45,11 @@ export async function orders(db: Connection, actor: Actor, f: Filters) {
   else if (f.retailer_id) w.add('o.retailer_id=?',f.retailer_id)
   if (f.status) w.add('o.status=?',f.status)
   if (f.q) w.add('o.number ILIKE ?', '%'+f.q+'%')
-  return page(db,'o.*','FROM orders o',w,'o.created_at DESC,o.id',f)
+  const columns = `o.*,u.name AS retailer_name,u.business_name,u.contact AS retailer_contact,
+    (SELECT COALESCE(json_agg(json_build_object('product_id',oi.product_id,'product_name',oi.product_name,'quantity',oi.quantity,'unit_price',oi.unit_price,'subtotal',oi.subtotal) ORDER BY oi.product_id),'[]'::json) FROM order_items oi WHERE oi.order_id=o.id) AS items,
+    (SELECT COALESCE(json_agg(json_build_object('status',oh.status,'reason',oh.reason,'actor_name',au.name,'created_at',oh.created_at) ORDER BY oh.created_at,oh.id),'[]'::json) FROM order_history oh LEFT JOIN users au ON au.id=oh.actor_id WHERE oh.order_id=o.id) AS history,
+    (SELECT json_build_object('id',s.id,'number',s.number) FROM sales s WHERE s.order_id=o.id) AS sale`
+  return page(db,columns,'FROM orders o JOIN users u ON u.id=o.retailer_id',w,'o.created_at DESC,o.id',f)
 }
 export function salesWhere(actor: Actor, f: Filters, receivables = false) {
   const w = dates(new Where(),f,'s.created_at')
@@ -72,7 +76,7 @@ export function stockWhere(f: Filters) {
   return w
 }
 export async function movements(db: Connection, f: Filters) {
-  return page(db,'m.*','FROM stock_movements m',stockWhere(f),'m.created_at DESC,m.id',f)
+  return page(db,'m.*,u.name AS actor_name','FROM stock_movements m LEFT JOIN users u ON u.id=m.actor_id',stockWhere(f),'m.created_at DESC,m.id',f)
 }
 export async function audits(db: Connection, f: Filters) {
   const w = dates(new Where(),f,'a.created_at')

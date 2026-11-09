@@ -14,12 +14,12 @@ const {
   clearCart,
   createOrder,
   getProductAvailableQty
-} = useMockOrders()
+} = useOrders()
 
-const { currentUser } = useMockAuth()
+const { currentUser } = useAuth()
 const { showSuccess, showError, showWarning } = useNotification()
 
-// ─── Modal States ─────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Modal States Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const isConfirmSubmitOpen = ref(false)
 const isConfirmClearOpen = ref(false)
 const isSubmittingOrder = ref(false)
@@ -116,14 +116,14 @@ async function handleSubmitOrder() {
     <!-- Header -->
     <div class="cart-header">
       <div>
-        <h1 class="page-title">🛍️ Keranjang Pesanan</h1>
+        <h1 class="page-title">Ã°Å¸â€ºÂÃ¯Â¸Â Keranjang Pesanan</h1>
         <p class="page-desc">
           Periksa kembali rincian tabung gas sebelum mengajukan pesanan ke pangkalan.
         </p>
       </div>
 
       <NuxtLink to="/retailer/catalog">
-        <BaseButton variant="ghost" size="sm">← Tambah Produk Lain</BaseButton>
+        <BaseButton variant="ghost" size="sm">Ã¢â€ Â Tambah Produk Lain</BaseButton>
       </NuxtLink>
     </div>
 
@@ -147,7 +147,7 @@ async function handleSubmitOrder() {
       <div class="cart-items-section">
         <!-- Stock Conflict Warning Banner -->
         <div v-if="hasStockConflict" class="conflict-alert">
-          <span class="alert-icon">⚠️</span>
+          <span class="alert-icon">Ã¢Å¡Â Ã¯Â¸Â</span>
           <div>
             <strong>Peringatan Ketersediaan Stok:</strong> Beberapa item di keranjang melebihi stok
             tersedia di pangkalan. Harap kurangi kuantitas agar dapat mengajukan pesanan.
@@ -187,7 +187,7 @@ async function handleSubmitOrder() {
                   </strong>
                 </div>
                 <div v-if="item.is_exceeded" class="item-error-msg">
-                  ⚠️ Kuantitas dipesan ({{ item.quantity }}) melebihi stok tersedia ({{ item.available_qty }}).
+                  Ã¢Å¡Â Ã¯Â¸Â Kuantitas dipesan ({{ item.quantity }}) melebihi stok tersedia ({{ item.available_qty }}).
                 </div>
               </div>
 
@@ -199,7 +199,7 @@ async function handleSubmitOrder() {
                     title="Kurangi"
                     @click="handleQtyChange(item.product_id, item.quantity - 1, item.available_qty)"
                   >
-                    −
+                    Ã¢Ë†â€™
                   </button>
                   <span class="qty-num">{{ item.quantity }}</span>
                   <button
@@ -224,7 +224,7 @@ async function handleSubmitOrder() {
                   title="Hapus item"
                   @click="handleRemoveItem(item.product_id, item.product_name)"
                 >
-                  🗑️
+                  Ã°Å¸â€”â€˜Ã¯Â¸Â
                 </button>
               </div>
             </div>
@@ -261,7 +261,7 @@ async function handleSubmitOrder() {
 
           <!-- PRD Business Rules Note -->
           <div class="rule-box">
-            <p class="rule-title">ℹ️ Aturan Pemesanan:</p>
+            <p class="rule-title">Ã¢â€žÂ¹Ã¯Â¸Â Aturan Pemesanan:</p>
             <ul class="rule-list">
               <li>Pesanan yang diajukan berstatus <strong>MENUNGGU KONFIRMASI</strong>.</li>
               <li>Stok fisik tabung baru dialokasikan setelah disetujui Admin/Petugas pangkalan.</li>
@@ -280,7 +280,7 @@ async function handleSubmitOrder() {
           </BaseButton>
 
           <NuxtLink to="/retailer/catalog" class="back-link">
-            ← Tambah Tabung Lain
+            Ã¢â€ Â Tambah Tabung Lain
           </NuxtLink>
         </div>
       </div>
@@ -335,7 +335,7 @@ async function handleSubmitOrder() {
           :loading="isSubmittingOrder"
           @click="handleSubmitOrder"
         >
-          ✅ Ya, Ajukan Pesanan
+          Ã¢Å“â€¦ Ya, Ajukan Pesanan
         </BaseButton>
       </template>
     </BaseModal>

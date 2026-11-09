@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatRupiah, formatQuantity, formatDateTime } from '~/composables/useFormatters'
-import type { MockOrder } from '~/data/mockOrders'
-import type { CompleteOrderPayload } from '~/composables/useMockOrders'
+import type { MockOrder } from '~/types/orders'
+import type { CompleteOrderPayload } from '~/composables/useOrders'
 
 interface Props {
   orderId: string
@@ -16,11 +16,11 @@ const {
   rejectOrder,
   cancelOrder,
   completeOrder
-} = useMockOrders()
+} = useOrders()
 
-const { getBalance } = useMockInventory()
-const { getSaleByOrderId } = useMockSales()
-const { currentUser } = useMockAuth()
+const { getBalance } = useInventory()
+const { api } = useApi()
+const { currentUser } = useAuth()
 const { showSuccess, showError, showWarning } = useNotification()
 
 const basePath = computed(() => (props.role === 'admin' ? '/admin/orders' : '/staff/orders'))
@@ -32,7 +32,10 @@ const currentActor = computed(() =>
 const order = computed(() => getOrderById(props.orderId))
 
 // Ambil referensi penjualan jika status sudah SELESAI
-const relatedSale = computed(() => (order.value ? getSaleByOrderId(order.value.id) : undefined))
+const relatedSale = ref<any>(null)
+watch(order, async (current) => {
+  relatedSale.value = current?.sale_id ? await api(`/sales/${current.sale_id}`).catch(() => null) : null
+}, { immediate: true })
 
 // Cek ketersediaan stok untuk seluruh item (untuk konfirmasi)
 const stockCheckResult = computed(() => {
@@ -52,7 +55,7 @@ const stockCheckResult = computed(() => {
   return { canConfirm: allAvailable, items }
 })
 
-// ─── Modal States ─────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Modal States ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const isConfirmModalOpen = ref(false)
 const isSubmittingConfirm = ref(false)
 
@@ -114,7 +117,7 @@ const remainingBalance = computed(() => {
   return Math.max(0, order.value.total - (paymentAmount.value || 0))
 })
 
-// ─── Action Handlers ──────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Action Handlers ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 async function handleConfirmSubmit() {
   if (!order.value) return
   isSubmittingConfirm.value = true
@@ -179,7 +182,7 @@ async function handleCompleteSubmit() {
   // Validasi pengembalian tabung
   for (const ret of handoverReturns.value) {
     if (ret.empty_returned < 0 || !Number.isInteger(ret.empty_returned)) {
-      showError(`Jumlah tabung kosong untuk "${ret.product_name}" harus bilangan bulat ≥ 0.`)
+      showError(`Jumlah tabung kosong untuk "${ret.product_name}" harus bilangan bulat ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¥ 0.`)
       return
     }
   }
@@ -224,9 +227,9 @@ async function handleCompleteSubmit() {
 
 // Stepper Visual State Helper
 const statusSteps = [
-  { key: 'MENUNGGU_KONFIRMASI', label: 'Pengajuan', icon: '📝' },
-  { key: 'DIKONFIRMASI', label: 'Dikonfirmasi', icon: '👍' },
-  { key: 'SELESAI', label: 'Selesai (Serah-Terima)', icon: '🎉' }
+  { key: 'MENUNGGU_KONFIRMASI', label: 'Pengajuan', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â' },
+  { key: 'DIKONFIRMASI', label: 'Dikonfirmasi', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚Â' },
+  { key: 'SELESAI', label: 'Selesai (Serah-Terima)', icon: 'ÃƒÂ°Ã…Â¸Ã…Â½Ã¢â‚¬Â°' }
 ]
 
 function getStepState(stepKey: string, currentStatus: string) {
@@ -248,7 +251,7 @@ function getStepState(stepKey: string, currentStatus: string) {
     <!-- Back Navigation -->
     <div class="nav-back-row">
       <NuxtLink :to="basePath" class="back-link">
-        ← Kembali ke Antrean Pesanan
+        ÃƒÂ¢Ã¢â‚¬Â Ã‚Â Kembali ke Antrean Pesanan
       </NuxtLink>
     </div>
 
@@ -286,7 +289,7 @@ function getStepState(stepKey: string, currentStatus: string) {
 
           <!-- Alert Khusus Ditolak / Dibatalkan -->
           <div v-if="order.status === 'DITOLAK'" class="status-alert alert-rejected">
-            <span class="alert-icon">❌</span>
+            <span class="alert-icon">ÃƒÂ¢Ã‚ÂÃ…â€™</span>
             <div>
               <strong>Pesanan Ditolak:</strong>
               <p class="alert-reason">{{ order.rejection_reason || 'Tidak ada alasan yang dicantumkan.' }}</p>
@@ -294,7 +297,7 @@ function getStepState(stepKey: string, currentStatus: string) {
           </div>
 
           <div v-if="order.status === 'DIBATALKAN'" class="status-alert alert-cancelled">
-            <span class="alert-icon">⚠️</span>
+            <span class="alert-icon">ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â</span>
             <div>
               <strong>Pesanan Dibatalkan:</strong>
               <p class="alert-reason">{{ order.cancellation_reason || 'Pesanan dibatalkan oleh pihak pangkalan.' }}</p>
@@ -309,7 +312,7 @@ function getStepState(stepKey: string, currentStatus: string) {
               :class="['stepper-item', getStepState(step.key, order.status)]"
             >
               <div class="step-circle">
-                <span v-if="getStepState(step.key, order.status) === 'completed'">✓</span>
+                <span v-if="getStepState(step.key, order.status) === 'completed'">ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</span>
                 <span v-else>{{ step.icon }}</span>
               </div>
               <span class="step-label">{{ step.label }}</span>
@@ -350,10 +353,10 @@ function getStepState(stepKey: string, currentStatus: string) {
                   </td>
                   <td v-if="order.status === 'MENUNGGU_KONFIRMASI'" class="text-center">
                     <span v-if="item.isSufficient" class="stock-ok-badge">
-                      ✓ Cukup (Tersedia: {{ item.available }})
+                      ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Cukup (Tersedia: {{ item.available }})
                     </span>
                     <span v-else class="stock-warn-badge">
-                      ⚠️ Kurang (Tersedia: {{ item.available }})
+                      ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Kurang (Tersedia: {{ item.available }})
                     </span>
                   </td>
                 </tr>
@@ -387,10 +390,10 @@ function getStepState(stepKey: string, currentStatus: string) {
                 </div>
                 <div v-if="order.status === 'MENUNGGU_KONFIRMASI'" class="m-stock-check">
                   <span v-if="item.isSufficient" class="stock-ok-badge">
-                    ✓ Stok Cukup (Tersedia: {{ item.available }})
+                    ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Stok Cukup (Tersedia: {{ item.available }})
                   </span>
                   <span v-else class="stock-warn-badge">
-                    ⚠️ Stok Kurang (Tersedia: {{ item.available }})
+                    ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Stok Kurang (Tersedia: {{ item.available }})
                   </span>
                 </div>
               </div>
@@ -489,11 +492,11 @@ function getStepState(stepKey: string, currentStatus: string) {
               :disabled="!stockCheckResult.canConfirm"
               @click="isConfirmModalOpen = true"
             >
-              ✓ Setujui & Konfirmasi
+              ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Setujui & Konfirmasi
             </BaseButton>
 
             <p v-if="!stockCheckResult.canConfirm" class="stock-block-warn">
-              ⛔ Stok tabung fisik tidak mencukupi untuk memenuhi seluruh item pesanan ini.
+              ÃƒÂ¢Ã¢â‚¬ÂºÃ¢â‚¬Â Stok tabung fisik tidak mencukupi untuk memenuhi seluruh item pesanan ini.
             </p>
 
             <BaseButton
@@ -502,7 +505,7 @@ function getStepState(stepKey: string, currentStatus: string) {
               class="w-full"
               @click="isRejectModalOpen = true"
             >
-              ✕ Tolak Pesanan
+              ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢ Tolak Pesanan
             </BaseButton>
           </div>
 
@@ -518,7 +521,7 @@ function getStepState(stepKey: string, currentStatus: string) {
               class="w-full"
               @click="openCompleteModal"
             >
-              🎉 Selesaikan Serah-Terima
+              ÃƒÂ°Ã…Â¸Ã…Â½Ã¢â‚¬Â° Selesaikan Serah-Terima
             </BaseButton>
 
             <BaseButton
@@ -527,13 +530,13 @@ function getStepState(stepKey: string, currentStatus: string) {
               class="w-full text-danger"
               @click="isCancelModalOpen = true"
             >
-              ⚠️ Batalkan Pesanan
+              ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Batalkan Pesanan
             </BaseButton>
           </div>
 
           <!-- Status: SELESAI -->
           <div v-else-if="order.status === 'SELESAI'" class="action-done-box text-success">
-            <span>✅</span>
+            <span>ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦</span>
             <div>
               <strong>Pesanan Selesai</strong>
               <p class="done-desc">Serah-terima telah rampung dan tercatat dalam buku penjualan.</p>
@@ -542,7 +545,7 @@ function getStepState(stepKey: string, currentStatus: string) {
 
           <!-- Status: DITOLAK / DIBATALKAN -->
           <div v-else class="action-done-box text-muted">
-            <span>⛔</span>
+            <span>ÃƒÂ¢Ã¢â‚¬ÂºÃ¢â‚¬Â</span>
             <div>
               <strong>Pesanan Tidak Aktif</strong>
               <p class="done-desc">Tidak ada tindakan operasional lebih lanjut.</p>
@@ -616,7 +619,7 @@ function getStepState(stepKey: string, currentStatus: string) {
             </div>
           </div>
           <p class="modal-notice-box">
-            ℹ️ Konfirmasi akan mengalokasikan stok penuh tabung ke <em>reserved_qty</em>.
+            ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¹ÃƒÂ¯Ã‚Â¸Ã‚Â Konfirmasi akan mengalokasikan stok penuh tabung ke <em>reserved_qty</em>.
             Stok fisik baru berkurang saat serah-terima dilakukan.
           </p>
         </div>
@@ -634,7 +637,7 @@ function getStepState(stepKey: string, currentStatus: string) {
           :loading="isSubmittingConfirm"
           @click="handleConfirmSubmit"
         >
-          ✓ Ya, Setujui Pesanan
+          ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Ya, Setujui Pesanan
         </BaseButton>
       </template>
     </BaseModal>
@@ -676,7 +679,7 @@ function getStepState(stepKey: string, currentStatus: string) {
           :loading="isSubmittingReject"
           @click="handleRejectSubmit"
         >
-          ✕ Tolak Pesanan
+          ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢ Tolak Pesanan
         </BaseButton>
       </template>
     </BaseModal>
@@ -694,7 +697,7 @@ function getStepState(stepKey: string, currentStatus: string) {
             Apakah Anda yakin ingin membatalkan pesanan <strong>{{ order?.number }}</strong>?
           </p>
           <p v-if="order?.status === 'DIKONFIRMASI'" class="modal-warn-box">
-            ⚠️ <strong>Perhatian:</strong> Pesanan ini telah berstatus DIKONFIRMASI.
+            ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â <strong>Perhatian:</strong> Pesanan ini telah berstatus DIKONFIRMASI.
             Membatalkan pesanan akan secara otomatis <strong>melepaskan alokasi stok reserved</strong>
             kembali menjadi stok siap dipesan.
           </p>
@@ -865,11 +868,11 @@ function getStepState(stepKey: string, currentStatus: string) {
           <!-- Bagian C: Ringkasan Lengkap Sebelum Konfirmasi -->
           <div class="handover-section review-summary-container">
             <h4 class="section-sub-title">3. Ringkasan Sebelum Konfirmasi Serah-Terima</h4>
-            
+
             <div class="review-card">
               <!-- Rincian Tabung -->
               <div class="review-block">
-                <span class="review-block-title">📦 Rincian Fisik Tabung:</span>
+                <span class="review-block-title">ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¦ Rincian Fisik Tabung:</span>
                 <div class="review-table-mini">
                   <div
                     v-for="ret in handoverReturns"
@@ -878,7 +881,7 @@ function getStepState(stepKey: string, currentStatus: string) {
                   >
                     <span class="r-name">{{ ret.product_name }}:</span>
                     <span class="r-val">
-                      {{ ret.quantity }} tabung penuh diserahkan ➔ 
+                      {{ ret.quantity }} tabung penuh diserahkan ÃƒÂ¢Ã…Â¾Ã¢â‚¬Â
                       <strong :class="ret.empty_returned > 0 ? 'text-success' : 'text-muted'">
                         {{ ret.empty_returned }} tabung kosong diterima
                       </strong>
@@ -889,7 +892,7 @@ function getStepState(stepKey: string, currentStatus: string) {
 
               <!-- Rincian Keuangan -->
               <div class="review-block">
-                <span class="review-block-title">💰 Rincian Pembayaran & Sisa Piutang:</span>
+                <span class="review-block-title">ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â° Rincian Pembayaran & Sisa Piutang:</span>
                 <div class="review-grid-two">
                   <div class="r-cell">
                     <span class="r-lbl">Total Transaksi:</span>
@@ -931,7 +934,7 @@ function getStepState(stepKey: string, currentStatus: string) {
           :loading="isSubmittingComplete"
           @click="handleCompleteSubmit"
         >
-          ✅ Konfirmasi & Simpan Serah-Terima
+          ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Konfirmasi & Simpan Serah-Terima
         </BaseButton>
       </template>
     </BaseModal>

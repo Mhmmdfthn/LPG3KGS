@@ -3,11 +3,11 @@ definePageMeta({
   layout: 'default'
 })
 
-const { login } = useMockAuth()
+const { login } = useAuth()
 const { showSuccess, showError } = useNotification()
 
-const identity = ref('admin')
-const password = ref('password-uji-123')
+const identity = ref('')
+const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
 
@@ -43,9 +43,6 @@ async function handleLogin() {
   serverError.value = ''
 
   try {
-    // Simulasi delay jaringan realistis
-    await new Promise(resolve => setTimeout(resolve, 500))
-
     const loggedUser = await login(identity.value, password.value)
     showSuccess(`Selamat datang kembali, ${loggedUser.name}!`, 'Masuk Berhasil')
 
@@ -64,43 +61,6 @@ async function handleLogin() {
   }
 }
 
-// Shortcut demo untuk kemudahan pengujian
-function quickSelect(type: 'admin' | 'karyawan' | 'pengecer' | 'pending' | 'rejected' | 'inactive' | 'wrong_pass') {
-  serverError.value = ''
-  errors.identity = ''
-  errors.password = ''
-
-  switch (type) {
-    case 'admin':
-      identity.value = 'admin'
-      password.value = 'password-uji-123'
-      break
-    case 'karyawan':
-      identity.value = 'siti_karyawan'
-      password.value = 'password-uji-123'
-      break
-    case 'pengecer':
-      identity.value = 'warung_sumber'
-      password.value = 'password-uji-123'
-      break
-    case 'pending':
-      identity.value = 'toko_makmur'
-      password.value = 'password-uji-123'
-      break
-    case 'rejected':
-      identity.value = 'toko_subur'
-      password.value = 'password-uji-123'
-      break
-    case 'inactive':
-      identity.value = 'kios_bunda'
-      password.value = 'password-uji-123'
-      break
-    case 'wrong_pass':
-      identity.value = 'admin'
-      password.value = 'sandi-salah-123'
-      break
-  }
-}
 </script>
 
 <template>
@@ -114,7 +74,7 @@ function quickSelect(type: 'admin' | 'karyawan' | 'pengecer' | 'pending' | 'reje
 
       <!-- Alert Error Banner jika kredensial/status ditolak -->
       <div v-if="serverError" class="auth-error-banner" role="alert">
-        <span class="error-banner-icon">⚠️</span>
+        <span class="error-banner-icon">âš ï¸</span>
         <div class="error-banner-text">{{ serverError }}</div>
       </div>
 
@@ -159,22 +119,6 @@ function quickSelect(type: 'admin' | 'karyawan' | 'pengecer' | 'pending' | 'reje
           </BaseButton>
         </div>
       </form>
-
-      <!-- Quick Demo Switcher untuk pengujian role & error states -->
-      <div class="quick-demo-box">
-        <span class="demo-tag">UJI COBA SIMULASI LOGIN:</span>
-        <div class="demo-btn-group">
-          <button type="button" class="quick-btn" title="Login sebagai Pemilik" @click="quickSelect('admin')">Admin</button>
-          <button type="button" class="quick-btn" title="Login sebagai Karyawan" @click="quickSelect('karyawan')">Karyawan</button>
-          <button type="button" class="quick-btn" title="Login sebagai Pengecer Aktif" @click="quickSelect('pengecer')">Pengecer</button>
-        </div>
-        <div class="demo-btn-group mt-2">
-          <button type="button" class="quick-btn btn-state" title="Uji akun status PENDING" @click="quickSelect('pending')">Akun Pending</button>
-          <button type="button" class="quick-btn btn-state" title="Uji akun status REJECTED" @click="quickSelect('rejected')">Akun Ditolak</button>
-          <button type="button" class="quick-btn btn-state" title="Uji akun status INACTIVE" @click="quickSelect('inactive')">Akun Nonaktif</button>
-          <button type="button" class="quick-btn btn-state" title="Uji kata sandi salah" @click="quickSelect('wrong_pass')">Sandi Salah</button>
-        </div>
-      </div>
 
       <div class="auth-footer">
         <span>Belum memiliki akun pengecer?</span>

@@ -3,10 +3,10 @@ import { formatQuantity, formatDate } from '~/composables/useFormatters'
 
 definePageMeta({ layout: 'staff' })
 
-const { products } = useMockProducts()
-const { balances } = useMockInventory()
+const { products } = useProducts()
+const { balances } = useInventory()
 
-// ─── Filter & Pencarian ───────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Filter & Pencarian Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const searchQuery = ref('')
 const statusFilter = ref<'ALL' | 'ACTIVE' | 'LOW_STOCK'>('ALL')
 
@@ -28,9 +28,9 @@ const inventoryRows = computed((): InventoryRow[] => {
     .filter(p => p.active) // Karyawan hanya melihat produk aktif
     .map(p => {
       const bal = balances.value.find(b => b.product_id === p.id)
-      const full_qty = bal?.full_qty ?? p.full_qty
-      const empty_qty = bal?.empty_qty ?? p.empty_qty
-      const reserved_qty = bal?.reserved_qty ?? p.reserved_qty
+    const full_qty = bal?.full_qty ?? p.full_qty ?? 0
+    const empty_qty = bal?.empty_qty ?? p.empty_qty ?? 0
+    const reserved_qty = bal?.reserved_qty ?? p.reserved_qty ?? 0
       const available_qty = Math.max(0, full_qty - reserved_qty)
       return {
         product_id: p.id,
@@ -69,39 +69,39 @@ const today = computed(() => formatDate(new Date().toISOString()))
   <div class="page-inventory">
     <div class="page-header">
       <div>
-        <h1 class="page-title">📦 Stok Terkini</h1>
+        <h1 class="page-title">Ã°Å¸â€œÂ¦ Stok Terkini</h1>
         <p class="page-desc">Saldo stok produk aktif. Baca-saja. Data per {{ today }}.</p>
       </div>
       <NuxtLink to="/staff/inventory/receipts">
-        <BaseButton variant="primary">🚚 Catat Pasokan</BaseButton>
+        <BaseButton variant="primary">Ã°Å¸Å¡Å¡ Catat Pasokan</BaseButton>
       </NuxtLink>
     </div>
 
     <!-- Summary Cards -->
     <div class="summary-grid">
       <div class="summary-card summary-full">
-        <div class="summary-icon">🟢</div>
+        <div class="summary-icon">Ã°Å¸Å¸Â¢</div>
         <div class="summary-body">
           <p class="summary-label">Stok Penuh</p>
           <p class="summary-value">{{ formatQuantity(totalFull) }}</p>
         </div>
       </div>
       <div class="summary-card summary-empty">
-        <div class="summary-icon">⚪</div>
+        <div class="summary-icon">Ã¢Å¡Âª</div>
         <div class="summary-body">
           <p class="summary-label">Stok Kosong</p>
           <p class="summary-value">{{ formatQuantity(totalEmpty) }}</p>
         </div>
       </div>
       <div class="summary-card summary-available">
-        <div class="summary-icon">✅</div>
+        <div class="summary-icon">Ã¢Å“â€¦</div>
         <div class="summary-body">
           <p class="summary-label">Tersedia</p>
           <p class="summary-value">{{ formatQuantity(totalAvailable) }}</p>
         </div>
       </div>
       <div :class="['summary-card', lowStockCount > 0 ? 'summary-warning' : 'summary-ok']">
-        <div class="summary-icon">{{ lowStockCount > 0 ? '⚠️' : '👍' }}</div>
+        <div class="summary-icon">{{ lowStockCount > 0 ? 'Ã¢Å¡Â Ã¯Â¸Â' : 'Ã°Å¸â€˜Â' }}</div>
         <div class="summary-body">
           <p class="summary-label">Stok Rendah</p>
           <p class="summary-value">{{ lowStockCount }} produk</p>
@@ -110,12 +110,12 @@ const today = computed(() => formatDate(new Date().toISOString()))
     </div>
 
     <div v-if="lowStockCount > 0" class="alert-low-stock">
-      ⚠️ <strong>{{ lowStockCount }} produk</strong> di bawah stok minimum. Laporkan ke Admin atau catat pasokan segera.
+      Ã¢Å¡Â Ã¯Â¸Â <strong>{{ lowStockCount }} produk</strong> di bawah stok minimum. Laporkan ke Admin atau catat pasokan segera.
     </div>
 
     <!-- PRD note -->
     <div class="rule-note">
-      <strong>Catatan:</strong> Stok penuh dan kosong adalah saldo berbeda. Tersedia = Penuh − Dialokasikan.
+      <strong>Catatan:</strong> Stok penuh dan kosong adalah saldo berbeda. Tersedia = Penuh Ã¢Ë†â€™ Dialokasikan.
     </div>
 
     <!-- Filter -->
@@ -125,7 +125,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
       </div>
       <div class="filter-group">
         <button
-          v-for="opt in [{ val: 'ALL', label: 'Semua' }, { val: 'LOW_STOCK', label: '⚠️ Stok Rendah' }]"
+          v-for="opt in [{ val: 'ALL', label: 'Semua' }, { val: 'LOW_STOCK', label: 'Ã¢Å¡Â Ã¯Â¸Â Stok Rendah' }]"
           :key="opt.val"
           :class="['filter-btn', { active: statusFilter === opt.val }]"
           type="button"
@@ -175,8 +175,8 @@ const today = computed(() => formatDate(new Date().toISOString()))
             </td>
             <td class="text-right qty-min">{{ formatQuantity(row.minimum_stock) }}</td>
             <td>
-              <span v-if="row.low_stock" class="condition-low">⚠️ Rendah</span>
-              <span v-else class="condition-ok">✅ Normal</span>
+              <span v-if="row.low_stock" class="condition-low">Ã¢Å¡Â Ã¯Â¸Â Rendah</span>
+              <span v-else class="condition-ok">Ã¢Å“â€¦ Normal</span>
             </td>
           </tr>
         </tbody>
@@ -196,8 +196,8 @@ const today = computed(() => formatDate(new Date().toISOString()))
             <p class="inv-card-name">{{ row.name }}</p>
             <p class="inv-card-size">{{ row.size_kg }} kg</p>
           </div>
-          <span v-if="row.low_stock" class="condition-low">⚠️ Rendah</span>
-          <span v-else class="condition-ok">✅ Normal</span>
+          <span v-if="row.low_stock" class="condition-low">Ã¢Å¡Â Ã¯Â¸Â Rendah</span>
+          <span v-else class="condition-ok">Ã¢Å“â€¦ Normal</span>
         </div>
         <div class="inv-card-body">
           <div class="inv-card-row">
@@ -220,15 +220,15 @@ const today = computed(() => formatDate(new Date().toISOString()))
           </div>
         </div>
         <div v-if="row.low_stock" class="inv-card-alert">
-          ⚠️ Di bawah minimum ({{ formatQuantity(row.minimum_stock) }}). Segera catat pasokan.
+          Ã¢Å¡Â Ã¯Â¸Â Di bawah minimum ({{ formatQuantity(row.minimum_stock) }}). Segera catat pasokan.
         </div>
       </div>
     </div>
 
     <!-- Quick Links -->
     <div class="quick-links">
-      <NuxtLink to="/staff/inventory/movements" class="quick-link">📜 Riwayat Pergerakan Stok</NuxtLink>
-      <NuxtLink to="/staff/inventory/receipts" class="quick-link">🚚 Catat Pasokan Agen</NuxtLink>
+      <NuxtLink to="/staff/inventory/movements" class="quick-link">Ã°Å¸â€œÅ“ Riwayat Pergerakan Stok</NuxtLink>
+      <NuxtLink to="/staff/inventory/receipts" class="quick-link">Ã°Å¸Å¡Å¡ Catat Pasokan Agen</NuxtLink>
     </div>
   </div>
 </template>

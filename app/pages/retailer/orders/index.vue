@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { formatRupiah, formatDateTime } from '~/composables/useFormatters'
-import type { MockOrder } from '~/data/mockOrders'
+import type { MockOrder } from '~/types/orders'
 
 definePageMeta({
   layout: 'retailer'
 })
 
-const { orders } = useMockOrders()
-const { currentUser } = useMockAuth()
+const { orders } = useOrders()
+const { currentUser } = useAuth()
 
-// ─── Filter & Search States ───────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Filter & Search States Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 const searchQuery = ref('')
 const statusFilter = ref<string>('ALL')
 const currentPage = ref(1)
@@ -65,7 +65,7 @@ function formatProductSummary(items: MockOrder['items']): string {
     <!-- Header -->
     <div class="page-header">
       <div>
-        <h1 class="page-title">📦 Riwayat Pesanan Saya</h1>
+        <h1 class="page-title">Ã°Å¸â€œÂ¦ Riwayat Pesanan Saya</h1>
         <p class="page-desc">
           Pantau status pengajuan pesanan tabung gas LPG Anda ke pangkalan secara real-time.
         </p>
@@ -79,7 +79,7 @@ function formatProductSummary(items: MockOrder['items']): string {
     <!-- Filter Bar & Search -->
     <div class="filter-bar">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <span class="search-icon">Ã°Å¸â€Â</span>
         <input
           v-model="searchQuery"
           type="search"
@@ -92,7 +92,7 @@ function formatProductSummary(items: MockOrder['items']): string {
           class="clear-search-btn"
           @click="searchQuery = ''"
         >
-          ✕
+          Ã¢Å“â€¢
         </button>
       </div>
 
@@ -159,7 +159,7 @@ function formatProductSummary(items: MockOrder['items']): string {
 
         <div class="order-card-body">
           <div class="order-items-preview">
-            <span class="items-icon">🏷️</span>
+            <span class="items-icon">Ã°Å¸ÂÂ·Ã¯Â¸Â</span>
             <div class="items-text">
               <span class="items-title">{{ formatProductSummary(order.items) }}</span>
               <span class="items-total-qty">
@@ -181,7 +181,7 @@ function formatProductSummary(items: MockOrder['items']): string {
 
           <NuxtLink :to="`/retailer/orders/${order.id}`">
             <BaseButton variant="secondary" size="sm">
-              Lihat Rincian →
+              Lihat Rincian Ã¢â€ â€™
             </BaseButton>
           </NuxtLink>
         </div>

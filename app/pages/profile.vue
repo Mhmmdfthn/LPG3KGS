@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { currentUser, isAdmin, isStaff, changePassword, updateProfile, logout } = useMockAuth()
+const { currentUser, isAdmin, isStaff, changePassword, updateProfile, logout } = useAuth()
 const { showSuccess, showError } = useNotification()
 
 definePageMeta({
@@ -125,7 +125,7 @@ function handleLogout() {
 
         <div class="top-actions">
           <BaseButton variant="danger" size="sm" @click="isLogoutModalOpen = true">
-            🚪 Keluar Akun
+            ðŸšª Keluar Akun
           </BaseButton>
         </div>
       </div>
@@ -140,7 +140,7 @@ function handleLogout() {
               size="sm"
               @click="isEditingProfile = true"
             >
-              ✏️ Edit
+              âœï¸ Edit
             </BaseButton>
           </template>
 
@@ -214,7 +214,7 @@ function handleLogout() {
         <BaseCard title="Ubah Kata Sandi Akun" subtitle="Perbarui kata sandi untuk keamanan akses pangkalan" class="lg-span-2">
           <!-- Password Error Banner -->
           <div v-if="passError" class="pass-error-banner mb-4" role="alert">
-            <span>⚠️</span>
+            <span>âš ï¸</span>
             <span>{{ passError }}</span>
           </div>
 

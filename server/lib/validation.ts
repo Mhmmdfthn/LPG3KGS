@@ -15,6 +15,12 @@ export const account = z.object({
 }).strict()
 export const registration = account.extend({ password_confirmation: password }).refine(v => v.password === v.password_confirmation, 'Konfirmasi kata sandi tidak sama.')
 export const accountPatch = account.omit({ password: true }).partial().extend({ status: z.enum(['ACTIVE','INACTIVE']).optional() }).strict().refine(v => Object.keys(v).length > 0)
+export const profile = z.object({
+  name: z.string().trim().min(2).max(120).optional(),
+  business_name: z.string().trim().min(2).max(120).optional(),
+  contact: z.string().trim().regex(/^\+?[0-9 ()-]{6,30}$/).optional(),
+  email: z.email().max(254).toLowerCase().optional(),
+}).strict().refine(v => Object.keys(v).length > 0)
 const productFields = z.object({ name: z.string().trim().min(2).max(120), size_kg: z.number().positive().max(100).multipleOf(0.01), price: rupiah, minimum_stock: qty, active: z.boolean() }).strict()
 export const product = productFields.extend({ minimum_stock: qty.default(0), active: z.boolean().default(true) })
 export const productPatch = productFields.partial().strict().refine(v => Object.keys(v).length > 0)

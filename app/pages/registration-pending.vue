@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { MOCK_USERS, type MockUser } from '~/data/mockAuth'
+import type { User } from '~/types/models'
 
 definePageMeta({
   layout: 'default'
 })
 
-const { lastRegisteredUser } = useMockAuth()
+const { lastRegisteredUser } = useAuth()
 
 // Ambil akun pendaftar terbaru atau fallback ke sampel akun pending
-const pendingUser = computed<MockUser>(() => {
-  return lastRegisteredUser.value || MOCK_USERS.find(u => u.status === 'PENDING') || {
-    id: 'usr-pending-demo',
-    username: 'toko_makmur',
-    name: 'Dewi Lestari',
-    business_name: 'Toko Kelontong Makmur',
-    contact: '087811223344',
-    email: 'dewi@tokomakmur.com',
+const pendingUser = computed<User>(() => {
+  return lastRegisteredUser.value || {
+    id: '',
+    username: '',
+    name: '',
+    business_name: '',
+    contact: '',
     role: 'pengecer',
     status: 'PENDING',
     created_at: new Date().toISOString()
@@ -30,7 +29,7 @@ function tryLoginPending() {
 <template>
   <div class="pending-wrapper container">
     <div class="pending-card">
-      <div class="pending-icon" aria-hidden="true">⏳</div>
+      <div class="pending-icon" aria-hidden="true">â³</div>
 
       <div class="status-badge-wrap">
         <StatusBadge status="PENDING" label="STATUS: MENUNGGU PERSETUJUAN" size="md" />

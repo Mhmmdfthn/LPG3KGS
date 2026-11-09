@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { MOCK_ORDERS } from '~/data/mockOrders'
 
 definePageMeta({
   layout: 'staff'
 })
 
 const { showSuccess, showInfo } = useNotification()
+const { api } = useApi()
+const allOrders = ref<any[]>([])
+onMounted(async () => { allOrders.value = (await api<{ items: any[] }>('/orders?limit=100')).items })
 
 // Filter pesanan yang butuh tindakan operasional
-const pendingOrders = computed(() => MOCK_ORDERS.filter(o => o.status === 'MENUNGGU_KONFIRMASI' || o.status === 'DIKONFIRMASI'))
+const pendingOrders = computed(() => allOrders.value.filter(o => o.status === 'MENUNGGU_KONFIRMASI' || o.status === 'DIKONFIRMASI'))
 </script>
 
 <template>
@@ -38,28 +40,28 @@ const pendingOrders = computed(() => MOCK_ORDERS.filter(o => o.status === 'MENUN
 
     <!-- Operational Task Cards -->
     <div class="grid grid-cols-1 sm-grid-cols-2 lg-grid-cols-4 gap-4 mb-6">
-      <div class="action-card" @click="showInfo('Buka antrean pesanan masuk')">
+      <div class="action-card" @click="navigateTo('/staff/orders')">
         <div class="action-icon">📥</div>
         <h3 class="action-title">Pesanan Masuk</h3>
         <p class="action-desc">Konfirmasi atau selesaikan serah terima barang pesanan pengecer.</p>
         <span class="action-link">Buka Antrean →</span>
       </div>
 
-      <div class="action-card" @click="showInfo('Buka form penjualan langsung')">
+      <div v-if="false" class="action-card" @click="showInfo('Buka form penjualan langsung')">
         <div class="action-icon">⚡</div>
         <h3 class="action-title">Penjualan Langsung</h3>
         <p class="action-desc">Catat pembelian tunai oleh masyarakat umum tanpa akun pengecer.</p>
         <span class="action-link">Buka Form Kasir →</span>
       </div>
 
-      <div class="action-card" @click="showInfo('Buka form pasokan agen')">
+      <div class="action-card" @click="navigateTo('/staff/inventory/receipts')">
         <div class="action-icon">🚚</div>
         <h3 class="action-title">Catat Pasokan Agen</h3>
         <p class="action-desc">Catat tabung isi masuk dan tabung kosong yang dikembalikan ke truk agen.</p>
         <span class="action-link">Input Pasokan →</span>
       </div>
 
-      <div class="action-card" @click="showInfo('Buka pencarian tagihan bon')">
+      <div v-if="false" class="action-card" @click="showInfo('Buka pencarian tagihan bon')">
         <div class="action-icon">💰</div>
         <h3 class="action-title">Pencatatan Bon</h3>
         <p class="action-desc">Cari nomor transaksi atau nama pengecer untuk mencatat cicilan/pelunasan.</p>
@@ -95,7 +97,7 @@ const pendingOrders = computed(() => MOCK_ORDERS.filter(o => o.status === 'MENUN
               v-if="ord.status === 'MENUNGGU_KONFIRMASI'"
               variant="primary"
               size="sm"
-              @click="showSuccess(`Konfirmasi pesanan ${ord.number} berhasil disimulasikan!`)"
+              @click="navigateTo(`/staff/orders/${ord.id}`)"
             >
               Konfirmasi
             </BaseButton>
@@ -103,7 +105,7 @@ const pendingOrders = computed(() => MOCK_ORDERS.filter(o => o.status === 'MENUN
               v-else-if="ord.status === 'DIKONFIRMASI'"
               variant="success"
               size="sm"
-              @click="showSuccess(`Membuka modal serah-terima ${ord.number}`)"
+              @click="navigateTo(`/staff/orders/${ord.id}`)"
             >
               Serah-Terima
             </BaseButton>

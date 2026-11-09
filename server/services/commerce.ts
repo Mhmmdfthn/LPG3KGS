@@ -5,10 +5,10 @@ import { lockProducts, move } from './inventory'
 type Item = { product_id: string; quantity: number; empty_returned?: number; product_name?: string; unit_price?: number; subtotal?: number }
 type Settlement = { payment_type: 'TUNAI' | 'BON'; amount_paid: number; method: string; note?: string; returns: { product_id: string; empty_returned: number }[] }
 export async function orderDetail(db: Connection, actor: Actor, orderId: string) {
-  const order = await one(db,'SELECT * FROM orders WHERE id=$1',[orderId])
+  const order = await one(db,'SELECT o.*,u.name AS retailer_name,u.business_name,u.contact AS retailer_contact FROM orders o JOIN users u ON u.id=o.retailer_id WHERE o.id=$1',[orderId])
   own(actor,order.retailer_id)
   const items = (await db.query('SELECT * FROM order_items WHERE order_id=$1 ORDER BY product_id',[orderId])).rows
-  const history = (await db.query('SELECT * FROM order_history WHERE order_id=$1 ORDER BY created_at,id',[orderId])).rows
+  const history = (await db.query('SELECT oh.*,au.name AS actor_name FROM order_history oh LEFT JOIN users au ON au.id=oh.actor_id WHERE oh.order_id=$1 ORDER BY oh.created_at,oh.id',[orderId])).rows
   const sale = (await db.query('SELECT id,number FROM sales WHERE order_id=$1',[orderId])).rows[0] ?? null
   return { ...order, items, history, sale }
 }

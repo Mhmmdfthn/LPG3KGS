@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import type { MockUser } from '~/data/mockAuth'
-import type { CreateUserPayload } from '~/composables/useMockAuth'
+import type { User as MockUser } from '~/types/models'
+import type { CreateUserPayload } from '~/composables/useAuth'
 
 definePageMeta({
   layout: 'admin'
 })
 
-const { users, addUser, updateUser, toggleUserStatus, resetUserPassword } = useMockAuth()
+const { users, loadAccounts, addUser, updateUser, toggleUserStatus, resetUserPassword } = useAuth()
+onMounted(() => Promise.all([loadAccounts('/retailers'), loadAccounts('/staff')]))
 const { showSuccess, showError } = useNotification()
 
 // Tab aktif: 'pengecer' | 'karyawan'
@@ -370,14 +371,14 @@ async function handleConfirmResetPassword() {
 
       <div class="header-actions">
         <BaseButton variant="primary" size="md" @click="openAddModal">
-          <span class="btn-icon">➕</span> Tambah Pengguna Baru
+          <span class="btn-icon">âž•</span> Tambah Pengguna Baru
         </BaseButton>
       </div>
     </div>
 
     <!-- Banner Notifikasi jika ada Pengecer Pending -->
     <div v-if="pendingCount > 0" class="pending-notice-card mb-6">
-      <div class="notice-icon">⏳</div>
+      <div class="notice-icon">â³</div>
       <div class="notice-content">
         <h4 class="notice-title">Ada {{ pendingCount }} Pendaftaran Pengecer Menunggu Persetujuan</h4>
         <p class="notice-desc">
@@ -386,7 +387,7 @@ async function handleConfirmResetPassword() {
       </div>
       <div class="notice-action">
         <NuxtLink to="/admin/users/pending" class="notice-btn">
-          Tinjau Pendaftaran ({{ pendingCount }}) →
+          Tinjau Pendaftaran ({{ pendingCount }}) â†’
         </NuxtLink>
       </div>
     </div>
@@ -399,7 +400,7 @@ async function handleConfirmResetPassword() {
         :class="{ 'is-active': activeTab === 'pengecer' }"
         @click="activeTab = 'pengecer'"
       >
-        <span class="tab-icon">🏪</span>
+        <span class="tab-icon">ðŸª</span>
         <span class="tab-text">Pengecer B2B</span>
         <span class="tab-badge">{{ retailerCount }}</span>
       </button>
@@ -410,7 +411,7 @@ async function handleConfirmResetPassword() {
         :class="{ 'is-active': activeTab === 'karyawan' }"
         @click="activeTab = 'karyawan'"
       >
-        <span class="tab-icon">👷</span>
+        <span class="tab-icon">ðŸ‘·</span>
         <span class="tab-text">Karyawan Operasional</span>
         <span class="tab-badge">{{ staffCount }}</span>
       </button>
@@ -469,8 +470,8 @@ async function handleConfirmResetPassword() {
                 </td>
                 <td>
                   <div class="contact-cell">
-                    <span>📞 {{ user.contact }}</span>
-                    <span v-if="user.email" class="contact-email">✉️ {{ user.email }}</span>
+                    <span>ðŸ“ž {{ user.contact }}</span>
+                    <span v-if="user.email" class="contact-email">âœ‰ï¸ {{ user.email }}</span>
                     <span v-else class="text-muted text-xs">-</span>
                   </div>
                 </td>
@@ -522,7 +523,7 @@ async function handleConfirmResetPassword() {
               <div>
                 <h3 class="m-card-title">{{ activeTab === 'pengecer' ? (user.business_name || user.name) : user.name }}</h3>
                 <span class="m-card-subtitle">
-                  <span v-if="activeTab === 'pengecer' && user.business_name">{{ user.name }} • </span>
+                  <span v-if="activeTab === 'pengecer' && user.business_name">{{ user.name }} â€¢ </span>
                   <code class="text-xs">@{{ user.username }}</code>
                 </span>
               </div>
@@ -532,11 +533,11 @@ async function handleConfirmResetPassword() {
             <div class="card-body-row">
               <div class="m-info-item">
                 <span class="m-info-label">Kontak:</span>
-                <span class="m-info-value">📞 {{ user.contact }}</span>
+                <span class="m-info-value">ðŸ“ž {{ user.contact }}</span>
               </div>
               <div v-if="user.email" class="m-info-item">
                 <span class="m-info-label">Email:</span>
-                <span class="m-info-value">✉️ {{ user.email }}</span>
+                <span class="m-info-value">âœ‰ï¸ {{ user.email }}</span>
               </div>
               <div class="m-info-item">
                 <span class="m-info-label">Dibuat:</span>
@@ -620,11 +621,11 @@ async function handleConfirmResetPassword() {
           <div class="role-radio-group">
             <label class="role-pill" :class="{ 'is-selected': addForm.role === 'pengecer' }">
               <input v-model="addForm.role" type="radio" value="pengecer" class="sr-only">
-              <span>🏪 Pengecer (Warung B2B)</span>
+              <span>ðŸª Pengecer (Warung B2B)</span>
             </label>
             <label class="role-pill" :class="{ 'is-selected': addForm.role === 'karyawan' }">
               <input v-model="addForm.role" type="radio" value="karyawan" class="sr-only">
-              <span>👷 Karyawan (Operasional)</span>
+              <span>ðŸ‘· Karyawan (Operasional)</span>
             </label>
           </div>
         </div>
@@ -687,7 +688,7 @@ async function handleConfirmResetPassword() {
         </div>
 
         <div class="admin-notice mt-4">
-          <span class="notice-icon-sm">🛡️</span>
+          <span class="notice-icon-sm">ðŸ›¡ï¸</span>
           <span>Akun yang dibuat langsung oleh Admin otomatis berstatus <strong>AKTIF</strong> dan siap digunakan login.</span>
         </div>
       </form>
@@ -778,7 +779,7 @@ async function handleConfirmResetPassword() {
           class="confirm-icon-box"
           :class="userToToggle.status === 'ACTIVE' ? 'danger-icon-box' : 'success-icon-box'"
         >
-          {{ userToToggle.status === 'ACTIVE' ? '⏸️' : '▶️' }}
+          {{ userToToggle.status === 'ACTIVE' ? 'â¸ï¸' : 'â–¶ï¸' }}
         </div>
 
         <h4 class="confirm-title">
@@ -791,10 +792,10 @@ async function handleConfirmResetPassword() {
 
         <div class="status-warning-box text-sm">
           <template v-if="userToToggle.status === 'ACTIVE'">
-            ⚠️ <strong>Perhatian:</strong> Pengguna tidak akan dapat masuk ke sistem. Seluruh data historis transaksi dan pesanan tetap aman tersimpan.
+            âš ï¸ <strong>Perhatian:</strong> Pengguna tidak akan dapat masuk ke sistem. Seluruh data historis transaksi dan pesanan tetap aman tersimpan.
           </template>
           <template v-else>
-            ✅ <strong>Informasi:</strong> Pengguna akan dapat segera masuk kembali ke sistem menggunakan kredensial yang tersimpan.
+            âœ… <strong>Informasi:</strong> Pengguna akan dapat segera masuk kembali ke sistem menggunakan kredensial yang tersimpan.
           </template>
         </div>
       </div>

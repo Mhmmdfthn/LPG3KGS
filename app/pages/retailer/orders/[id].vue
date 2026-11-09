@@ -8,11 +8,11 @@ definePageMeta({
 const route = useRoute()
 const orderId = computed(() => String(route.params.id))
 
-const { getOrderById } = useMockOrders()
-const { currentUser } = useMockAuth()
+const { orders } = useOrders()
+const { currentUser } = useAuth()
 
 // Ambil data order berdasarkan ID atau number
-const order = computed(() => getOrderById(orderId.value))
+const order = computed(() => orders.value.find(item => item.id === orderId.value || item.number === orderId.value))
 
 // Validasi hak akses kepemilikan pesanan (PRD Rule)
 const isAuthorized = computed(() => {

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { MockProduct } from '~/data/mockProducts'
-import type { CreateProductPayload, UpdateProductPayload } from '~/composables/useMockProducts'
+import type { Product as MockProduct } from '~/types/models'
+import type { CreateProductPayload, UpdateProductPayload } from '~/composables/useProducts'
 
 definePageMeta({ layout: 'admin' })
 
-const { products, addProduct, updateProduct, toggleProductStatus } = useMockProducts()
+const { products, addProduct, updateProduct, toggleProductStatus } = useProducts()
 const { showSuccess, showError } = useNotification()
 
-// ─── Filter & Pencarian ──────────────────────────────────────────
+// â”€â”€â”€ Filter & Pencarian â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const searchQuery = ref('')
 const statusFilter = ref<'ALL' | 'ACTIVE' | 'INACTIVE'>('ALL')
 const currentPage = ref(1)
@@ -33,12 +33,12 @@ const paginatedProducts = computed(() => {
 
 watch([searchQuery, statusFilter], () => { currentPage.value = 1 })
 
-// ─── Counter Summary ─────────────────────────────────────────────
+// â”€â”€â”€ Counter Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const activeCount = computed(() => products.value.filter(p => p.active).length)
 const inactiveCount = computed(() => products.value.filter(p => !p.active).length)
 const lowStockCount = computed(() => products.value.filter(p => p.active && p.low_stock).length)
 
-// ─── Modal Tambah Produk (PG-09 Tambah) ─────────────────────────
+// â”€â”€â”€ Modal Tambah Produk (PG-09 Tambah) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const isAddModalOpen = ref(false)
 const isSubmittingAdd = ref(false)
 
@@ -75,7 +75,7 @@ function validateAddForm(): boolean {
   if (!addForm.size_kg || addForm.size_kg <= 0) { addErrors.size_kg = 'Berat harus bernilai positif (> 0).'; ok = false }
   if (addForm.price < 0) { addErrors.price = 'Harga tidak boleh negatif.'; ok = false }
   if (addForm.minimum_stock < 0 || !Number.isInteger(addForm.minimum_stock)) {
-    addErrors.minimum_stock = 'Stok minimum harus bilangan bulat ≥ 0.'
+    addErrors.minimum_stock = 'Stok minimum harus bilangan bulat â‰¥ 0.'
     ok = false
   }
   return ok
@@ -96,7 +96,7 @@ async function handleAddProduct() {
   }
 }
 
-// ─── Modal Edit Produk (PG-09 Edit) ─────────────────────────────
+// â”€â”€â”€ Modal Edit Produk (PG-09 Edit) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const isEditModalOpen = ref(false)
 const isSubmittingEdit = ref(false)
 const editingProductId = ref('')
@@ -134,7 +134,7 @@ function validateEditForm(): boolean {
   if (!editForm.size_kg || editForm.size_kg <= 0) { editErrors.size_kg = 'Berat harus bernilai positif (> 0).'; ok = false }
   if (editForm.price < 0) { editErrors.price = 'Harga tidak boleh negatif.'; ok = false }
   if (editForm.minimum_stock < 0 || !Number.isInteger(editForm.minimum_stock)) {
-    editErrors.minimum_stock = 'Stok minimum harus bilangan bulat ≥ 0.'
+    editErrors.minimum_stock = 'Stok minimum harus bilangan bulat â‰¥ 0.'
     ok = false
   }
   return ok
@@ -161,7 +161,7 @@ async function handleUpdateProduct() {
   }
 }
 
-// ─── Modal Konfirmasi Toggle Status ─────────────────────────────
+// â”€â”€â”€ Modal Konfirmasi Toggle Status â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const isToggleModalOpen = ref(false)
 const productToToggle = ref<MockProduct | null>(null)
 const isSubmittingToggle = ref(false)
@@ -191,7 +191,7 @@ async function handleConfirmToggle() {
   }
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Input Rupiah: hanya izinkan angka
 function parsePriceInput(val: string): number {
   const num = parseInt(val.replace(/\D/g, ''), 10)
@@ -202,7 +202,7 @@ function parsePriceInput(val: string): number {
 <template>
   <div class="page-container">
 
-    <!-- ── Header Halaman ──────────────────────────────────────── -->
+    <!-- â”€â”€ Header Halaman â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="page-header">
       <div class="header-left">
         <h1 class="page-title">Manajemen Produk (PG-08)</h1>
@@ -212,15 +212,15 @@ function parsePriceInput(val: string): number {
       </div>
       <div class="header-actions">
         <BaseButton variant="primary" size="md" @click="openAddModal">
-          ➕ Tambah Produk
+          âž• Tambah Produk
         </BaseButton>
       </div>
     </div>
 
-    <!-- ── Kartu Summary ──────────────────────────────────────── -->
+    <!-- â”€â”€ Kartu Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="summary-grid mb-6">
       <div class="summary-card" :class="{ 'filter-active': statusFilter === 'ALL' }" @click="statusFilter = 'ALL'">
-        <span class="summary-icon">📦</span>
+        <span class="summary-icon">ðŸ“¦</span>
         <div>
           <div class="summary-value">{{ products.length }}</div>
           <div class="summary-label">Total Produk</div>
@@ -228,7 +228,7 @@ function parsePriceInput(val: string): number {
       </div>
 
       <div class="summary-card" :class="{ 'filter-active': statusFilter === 'ACTIVE' }" @click="statusFilter = 'ACTIVE'">
-        <span class="summary-icon">✅</span>
+        <span class="summary-icon">âœ…</span>
         <div>
           <div class="summary-value text-success">{{ activeCount }}</div>
           <div class="summary-label">Produk Aktif</div>
@@ -236,7 +236,7 @@ function parsePriceInput(val: string): number {
       </div>
 
       <div class="summary-card" :class="{ 'filter-active': statusFilter === 'INACTIVE' }" @click="statusFilter = 'INACTIVE'">
-        <span class="summary-icon">⛔</span>
+        <span class="summary-icon">â›”</span>
         <div>
           <div class="summary-value text-muted">{{ inactiveCount }}</div>
           <div class="summary-label">Produk Nonaktif</div>
@@ -244,7 +244,7 @@ function parsePriceInput(val: string): number {
       </div>
 
       <div class="summary-card">
-        <span class="summary-icon">⚠️</span>
+        <span class="summary-icon">âš ï¸</span>
         <div>
           <div class="summary-value text-warning">{{ lowStockCount }}</div>
           <div class="summary-label">Stok Menipis</div>
@@ -252,7 +252,7 @@ function parsePriceInput(val: string): number {
       </div>
     </div>
 
-    <!-- ── Toolbar: Search & Filter ──────────────────────────── -->
+    <!-- â”€â”€ Toolbar: Search & Filter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="toolbar-card mb-6">
       <div class="toolbar-search">
         <BaseInput
@@ -271,7 +271,7 @@ function parsePriceInput(val: string): number {
       </div>
     </div>
 
-    <!-- ── Tabel / Kartu Produk ───────────────────────────────── -->
+    <!-- â”€â”€ Tabel / Kartu Produk â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
     <div class="table-card">
       <div v-if="paginatedProducts.length > 0">
 
@@ -298,7 +298,7 @@ function parsePriceInput(val: string): number {
                 <td>
                   <div class="product-name-cell">
                     <span class="product-icon">
-                      {{ product.size_kg <= 5 ? '🔵' : product.size_kg <= 12 ? '🟡' : '🔴' }}
+                      {{ product.size_kg <= 5 ? 'ðŸ”µ' : product.size_kg <= 12 ? 'ðŸŸ¡' : 'ðŸ”´' }}
                     </span>
                     <div>
                       <span class="product-name">{{ product.name }}</span>
@@ -320,10 +320,10 @@ function parsePriceInput(val: string): number {
                 </td>
                 <td class="text-center">
                   <span v-if="product.active && product.low_stock" class="low-stock-badge">
-                    ⚠️ Stok Menipis
+                    âš ï¸ Stok Menipis
                   </span>
-                  <span v-else-if="!product.active" class="text-muted text-xs">—</span>
-                  <span v-else class="stock-ok-badge">✓ Aman</span>
+                  <span v-else-if="!product.active" class="text-muted text-xs">â€”</span>
+                  <span v-else class="stock-ok-badge">âœ“ Aman</span>
                 </td>
                 <td class="text-right">
                   <div class="action-buttons">
@@ -361,7 +361,7 @@ function parsePriceInput(val: string): number {
             <div class="m-card-header">
               <div class="m-card-title-row">
                 <span class="product-icon-lg">
-                  {{ product.size_kg <= 5 ? '🔵' : product.size_kg <= 12 ? '🟡' : '🔴' }}
+                  {{ product.size_kg <= 5 ? 'ðŸ”µ' : product.size_kg <= 12 ? 'ðŸŸ¡' : 'ðŸ”´' }}
                 </span>
                 <div>
                   <h3 class="m-product-name">{{ product.name }}</h3>
@@ -383,7 +383,7 @@ function parsePriceInput(val: string): number {
               <div v-if="product.active" class="m-row">
                 <span class="m-label">Peringatan Stok:</span>
                 <span :class="product.low_stock ? 'text-warning' : 'text-success'">
-                  {{ product.low_stock ? '⚠️ Stok Menipis' : '✓ Aman' }}
+                  {{ product.low_stock ? 'âš ï¸ Stok Menipis' : 'âœ“ Aman' }}
                 </span>
               </div>
             </div>
@@ -434,7 +434,7 @@ function parsePriceInput(val: string): number {
           v-else
           title="Belum Ada Produk"
           description="Tambahkan produk LPG pertama untuk memulai operasional pemesanan pangkalan."
-          action-label="➕ Tambah Produk Pertama"
+          action-label="âž• Tambah Produk Pertama"
           @action="openAddModal"
         />
       </div>
@@ -442,18 +442,18 @@ function parsePriceInput(val: string): number {
 
     <!-- Catatan Aturan Bisnis -->
     <div class="footnote-card mt-4">
-      <span class="footnote-icon">ℹ️</span>
+      <span class="footnote-icon">â„¹ï¸</span>
       <p class="footnote-text">
         <strong>Catatan:</strong> Harga historis transaksi tidak berubah saat harga katalog diedit.
-        Produk yang dinonaktifkan tetap tersimpan dan tidak dihapus — riwayat transaksi tetap aman.
+        Produk yang dinonaktifkan tetap tersimpan dan tidak dihapus â€” riwayat transaksi tetap aman.
         Data inventaris stok dikelola pada modul Ringkasan Stok, bukan di halaman ini.
       </p>
     </div>
 
 
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <!-- MODAL PG-09: Tambah Produk Baru                          -->
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <BaseModal
       :is-open="isAddModalOpen"
       title="Tambah Produk Baru (PG-09)"
@@ -517,11 +517,11 @@ function parsePriceInput(val: string): number {
             <div class="toggle-pill-group">
               <label class="toggle-pill" :class="{ 'pill-active': addForm.active }">
                 <input v-model="addForm.active" type="radio" :value="true" class="sr-only">
-                <span>✅ Aktif</span>
+                <span>âœ… Aktif</span>
               </label>
               <label class="toggle-pill" :class="{ 'pill-inactive': !addForm.active }">
                 <input v-model="addForm.active" type="radio" :value="false" class="sr-only">
-                <span>⛔ Nonaktif</span>
+                <span>â›” Nonaktif</span>
               </label>
             </div>
             <span class="field-helper-msg">
@@ -531,7 +531,7 @@ function parsePriceInput(val: string): number {
         </div>
 
         <div class="form-note mt-4">
-          <span>🔒</span>
+          <span>ðŸ”’</span>
           <span>Produk baru mulai dengan stok nol. Penambahan stok fisik dilakukan melalui modul <strong>Catat Pasokan Agen</strong>.</span>
         </div>
       </form>
@@ -549,9 +549,9 @@ function parsePriceInput(val: string): number {
     </BaseModal>
 
 
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <!-- MODAL PG-09: Edit Produk                                  -->
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <BaseModal
       :is-open="isEditModalOpen"
       title="Edit Informasi Produk (PG-09)"
@@ -614,18 +614,18 @@ function parsePriceInput(val: string): number {
             <div class="toggle-pill-group">
               <label class="toggle-pill" :class="{ 'pill-active': editForm.active }">
                 <input v-model="editForm.active" type="radio" :value="true" class="sr-only">
-                <span>✅ Aktif</span>
+                <span>âœ… Aktif</span>
               </label>
               <label class="toggle-pill" :class="{ 'pill-inactive': !editForm.active }">
                 <input v-model="editForm.active" type="radio" :value="false" class="sr-only">
-                <span>⛔ Nonaktif</span>
+                <span>â›” Nonaktif</span>
               </label>
             </div>
           </div>
         </div>
 
         <div class="form-note mt-4">
-          <span>ℹ️</span>
+          <span>â„¹ï¸</span>
           <span>Mengedit harga <strong>tidak</strong> mengubah harga pada transaksi yang telah selesai. Data inventaris stok tidak terpengaruh oleh perubahan di halaman ini.</span>
         </div>
       </form>
@@ -643,9 +643,9 @@ function parsePriceInput(val: string): number {
     </BaseModal>
 
 
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <!-- MODAL: Konfirmasi Toggle Status Produk                    -->
-    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <BaseModal
       :is-open="isToggleModalOpen"
       :title="productToToggle?.active ? 'Nonaktifkan Produk?' : 'Aktifkan Produk?'"
@@ -657,7 +657,7 @@ function parsePriceInput(val: string): number {
           class="confirm-icon-box"
           :class="productToToggle.active ? 'danger-icon-box' : 'success-icon-box'"
         >
-          {{ productToToggle.active ? '⛔' : '✅' }}
+          {{ productToToggle.active ? 'â›”' : 'âœ…' }}
         </div>
 
         <h4 class="confirm-title">
@@ -666,20 +666,20 @@ function parsePriceInput(val: string): number {
 
         <div class="product-confirm-summary">
           <div class="confirm-product-icon">
-            {{ productToToggle.size_kg <= 5 ? '🔵' : productToToggle.size_kg <= 12 ? '🟡' : '🔴' }}
+            {{ productToToggle.size_kg <= 5 ? 'ðŸ”µ' : productToToggle.size_kg <= 12 ? 'ðŸŸ¡' : 'ðŸ”´' }}
           </div>
           <div>
             <strong class="confirm-product-name">{{ productToToggle.name }}</strong>
-            <span class="confirm-product-meta">{{ productToToggle.size_kg }} kg • {{ formatRupiah(productToToggle.price) }}/tabung</span>
+            <span class="confirm-product-meta">{{ productToToggle.size_kg }} kg â€¢ {{ formatRupiah(productToToggle.price) }}/tabung</span>
           </div>
         </div>
 
         <div class="status-change-note text-sm" :class="productToToggle.active ? 'note-warning' : 'note-info'">
           <template v-if="productToToggle.active">
-            ⚠️ <strong>Efek nonaktifkan:</strong> Produk ini tidak akan ditampilkan di katalog pengecer dan tidak dapat dipesan. Riwayat transaksi dan data stok fisik tidak akan berubah.
+            âš ï¸ <strong>Efek nonaktifkan:</strong> Produk ini tidak akan ditampilkan di katalog pengecer dan tidak dapat dipesan. Riwayat transaksi dan data stok fisik tidak akan berubah.
           </template>
           <template v-else>
-            ✅ <strong>Efek mengaktifkan:</strong> Produk ini akan kembali muncul di katalog pengecer dan dapat dipesan sesuai ketersediaan stok.
+            âœ… <strong>Efek mengaktifkan:</strong> Produk ini akan kembali muncul di katalog pengecer dan dapat dipesan sesuai ketersediaan stok.
           </template>
         </div>
       </div>

@@ -10,18 +10,16 @@ const navGroups = [
   {
     title: 'Operasional Harian',
     items: [
-      { label: 'Dashboard Tugas', to: '/staff', icon: '📊' },
-      { label: 'Pesanan Masuk', to: '/staff/orders', icon: '📥' },
-      { label: 'Penjualan Langsung', to: '/staff/sales/direct', icon: '⚡' },
-      { label: 'Catat Pembayaran Bon', to: '/staff/receivables', icon: '💰' }
+      { label: 'Dashboard Tugas', to: '/staff', icon: 'ðŸ“Š' },
+      { label: 'Pesanan Masuk', to: '/staff/orders', icon: 'ðŸ“¥' },
     ]
   },
   {
     title: 'Inventaris & Pasokan',
     items: [
-      { label: 'Stok Terkini (Baca-Saja)', to: '/staff/inventory', icon: '📦' },
-      { label: 'Catat Pasokan Agen', to: '/staff/inventory/receipts', icon: '🚚' },
-      { label: 'Riwayat Pergerakan Stok', to: '/staff/inventory/movements', icon: '📜' }
+      { label: 'Stok Terkini (Baca-Saja)', to: '/staff/inventory', icon: 'ðŸ“¦' },
+      { label: 'Catat Pasokan Agen', to: '/staff/inventory/receipts', icon: 'ðŸšš' },
+      { label: 'Riwayat Pergerakan Stok', to: '/staff/inventory/movements', icon: 'ðŸ“œ' }
     ]
   }
 ]
@@ -32,7 +30,7 @@ const navGroups = [
     <!-- Top Header -->
     <NavbarHeader
       role="karyawan"
-      title="Petugas Operasional — LPG3KGS"
+      title="Petugas Operasional â€” LPG3KGS"
       @toggle-sidebar="isMobileDrawerOpen = !isMobileDrawerOpen"
     />
 
@@ -77,7 +75,7 @@ const navGroups = [
             <span class="brand-badge">KARYAWAN</span>
             <span class="drawer-title">Operasional</span>
           </div>
-          <button type="button" class="drawer-close-btn" @click="closeDrawer">✕</button>
+          <button type="button" class="drawer-close-btn" @click="closeDrawer">âœ•</button>
         </div>
 
         <nav class="drawer-nav">

@@ -56,6 +56,7 @@ export function createBackend(db: Database, config: BackendConfig) {
     return { message:'Sesi telah diakhiri.' }
   } })
   route({ method:'GET',path:'/auth/me',roles:all,handle:async c => safeUser(c.user) })
+  route({ method:'PATCH',path:'/auth/me',roles:all,schema:v.profile,handle:c => accounts.updateOwnProfile(db,c.actor,c.body) })
   route({ method:'POST',path:'/auth/change-password',roles:all,schema:z.object({ current_password:z.string().max(200),new_password:v.password }).strict(),handle:async c => {
     await auth.rateLimit(db,'password:'+c.actor.id,10)
     const result = await auth.changePassword(db,c.actor,c.body.current_password,c.body.new_password)

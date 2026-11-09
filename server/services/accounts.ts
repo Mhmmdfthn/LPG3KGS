@@ -14,6 +14,16 @@ export async function updateAccount(db: Database, actor: Actor, userId: string, 
     return safeUser(updated)
   })
 }
+export async function updateOwnProfile(db: Database, actor: Actor, patch: Record<string, any>) {
+  return db.transaction(async tx => {
+    const before = await one(tx, 'SELECT * FROM users WHERE id=$1 FOR UPDATE', [actor.id])
+    const values: any[] = [actor.id]
+    const assignments = Object.entries(patch).map(([key, value]) => { values.push(value); return `${key}=$${values.length}` })
+    const updated = await one(tx, `UPDATE users SET ${assignments.join(',')},updated_at=now() WHERE id=$1 RETURNING *`, values)
+    await audit(tx, actor, 'PROFILE_UPDATED', 'user', actor.id, safeUser(before), safeUser(updated))
+    return safeUser(updated)
+  })
+}
 export async function approveAccount(db: Database, actor: Actor, userId: string, approved: boolean, reason?: string) {
   return db.transaction(async tx => {
     const before = await one(tx, "SELECT * FROM users WHERE id=$1 AND role='pengecer' FOR UPDATE", [userId])

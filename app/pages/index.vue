@@ -3,11 +3,9 @@ definePageMeta({
   layout: 'default'
 })
 
-const { switchRole } = useMockAuth()
-
 function goToRole(role: 'admin' | 'karyawan' | 'pengecer', path: string) {
-  switchRole(role)
-  navigateTo(path)
+  void role
+  navigateTo({ path: '/login', query: { redirect: path } })
 }
 </script>
 
