@@ -165,7 +165,7 @@ export function createBackend(db: Database, config: BackendConfig) {
       else if (error.code === '23505') { status=409; message='Data unik sudah terdaftar atau transaksi sudah diproses.' }
       else if (['23514','22003','23503'].includes(error.code)) { status=409; message='Data bertentangan dengan saldo atau referensi yang tersimpan.' }
       else if (['40P01','40001','55P03'].includes(error.code)) { status=409; message='Data sedang berubah. Ulangi permintaan dengan Idempotency-Key yang sama.' }
-      if (status === 500) console.error(JSON.stringify({ request_id:requestId, code:'INTERNAL_ERROR' }))
+      if (status === 500) console.error(JSON.stringify({ request_id:requestId, code:'INTERNAL_ERROR', message:error?.message }))
       setResponseStatus(event,status)
       if (status === 429) setHeader(event,'Retry-After',900)
       return { error: { code:status,message }, request_id:requestId }
