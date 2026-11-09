@@ -12,7 +12,14 @@ export interface Database extends Connection {
 
 export function createDatabase(url: string): Database {
   if (!url) throw new Error('DATABASE_URL wajib diisi.')
-  const pool = new pg.Pool({ connectionString: url, max: 10, connectionTimeoutMillis: 5000 })
+  // Di Vercel file CA tidak ikut ter-bundle: isi PEM lewat DATABASE_CA_CERT dan URL tanpa parameter ssl.
+  const ca = process.env.DATABASE_CA_CERT
+  const pool = new pg.Pool({
+    connectionString: url,
+    max: Number(process.env.PGPOOL_MAX) || 10,
+    connectionTimeoutMillis: 5000,
+    ...(ca ? { ssl: { ca, rejectUnauthorized: true } } : {}),
+  })
   pool.on('error', () => console.error('Koneksi database terputus.'))
   return {
     query: (text, values) => pool.query(text, values),
