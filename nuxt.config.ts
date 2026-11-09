@@ -14,6 +14,5 @@ export default defineNuxtConfig({
     appOrigin: 'http://localhost:3000',
     sessionHours: 12,
   },
-  nitro: { preset: 'node-server' },
   routeRules: { '/api/**': { headers: { 'Cache-Control': 'no-store' } } },
 })
