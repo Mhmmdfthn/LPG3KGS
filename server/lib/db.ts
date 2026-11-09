@@ -16,7 +16,7 @@ export function createDatabase(url: string): Database {
   const ca = process.env.DATABASE_CA_CERT
   const pool = new pg.Pool({
     connectionString: url,
-    max: Number(process.env.PGPOOL_MAX) || 10,
+    max: Number(process.env.PGPOOL_MAX) || (process.env.VERCEL ? 3 : 10),
     connectionTimeoutMillis: 5000,
     ...(ca ? { ssl: { ca, rejectUnauthorized: true } } : {}),
   })
