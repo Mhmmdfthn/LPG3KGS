@@ -1,5 +1,9 @@
 type Envelope<T> = { data: T; request_id: string }
 
+export interface ApiError extends Error {
+  status?: number
+}
+
 export function useApi() {
   const request = import.meta.server ? useRequestFetch() : $fetch
 
@@ -16,8 +20,17 @@ export function useApi() {
       const response = await request<Envelope<T>>(`/api${path}`, { ...options, headers } as any)
       return response.data
     } catch (error: any) {
+      const status: number | undefined = error?.statusCode ?? error?.status ?? error?.response?.status
       const message = error?.data?.error?.message || error?.data?.message || error?.message || 'Permintaan gagal.'
-      throw new Error(message)
+      const wrapped: ApiError = new Error(message)
+      wrapped.status = status
+      if (status === 401 && import.meta.client && !path.startsWith('/auth/')) {
+        // Sesi berakhir atau dicabut: bersihkan state dan kembali ke halaman masuk.
+        const { currentUser } = useAuth()
+        currentUser.value = null
+        if (useRoute().path !== '/login') await navigateTo('/login')
+      }
+      throw wrapped
     }
   }
 

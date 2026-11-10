@@ -7,7 +7,6 @@ definePageMeta({
 })
 
 const { products } = useProducts()
-const { balances } = useInventory()
 const { cartCount, cartTotal, addToCart, getProductAvailableQty } = useOrders()
 const { showSuccess, showError } = useNotification()
 

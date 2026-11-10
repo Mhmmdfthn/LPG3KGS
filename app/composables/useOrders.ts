@@ -22,6 +22,9 @@ export interface CompleteOrderPayload {
 
 const CART_STORAGE_KEY = 'lpg3kgs_mock_cart_v1'
 const ORDERS_STORAGE_KEY = 'lpg3kgs_mock_orders_v1'
+const LEGACY_CART_KEY = 'mock_cart_store'
+
+let inflightOrders: Promise<MockOrder[]> | null = null
 
 export function useOrders() {
   const { products, ensureLoaded } = useProducts()
@@ -32,6 +35,7 @@ export function useOrders() {
 
 // --- Orders State (single reactive store) ---
   const orders = useState<MockOrder[]>('api_orders', () => [])
+  const ordersLoaded = useState<boolean>('api_orders_loaded', () => false)
   const { currentUser } = useAuth()
 
 // --- LocalStorage synchronization (client-safe) ---
@@ -53,6 +57,14 @@ export function useOrders() {
     onMounted(() => { refreshOrders().catch(() => {}) })
     // Harga/nama/ukuran di keranjang mengikuti data produk terbaru dari server.
     watch(products, () => syncCartWithProducts())
+    // Data pesanan dan keranjang tidak boleh terbawa antar sesi pengguna.
+    watch(() => currentUser.value?.id, (next, previous) => {
+      if (!previous || next === previous) return
+      orders.value = []
+      ordersLoaded.value = false
+      cart.value = []
+      saveCart()
+    })
   }
 
   /**
@@ -82,10 +94,19 @@ export function useOrders() {
     }
   }
 
-  async function refreshOrders() {
+  async function refreshOrders(force = false) {
+    if (ordersLoaded.value && !force) return orders.value
+    if (inflightOrders) return inflightOrders
+    inflightOrders = loadOrders().finally(() => { inflightOrders = null })
+    return inflightOrders
+  }
+
+  async function loadOrders() {
+    // Belum ada sesi (mis. saat hidrasi pertama): tunggu middleware mengisi user.
+    if (!currentUser.value) return orders.value
     // Ukuran tabung pada item pesanan diambil dari master produk.
     await ensureLoaded().catch(() => {})
-    const path = currentUser.value?.role === 'pengecer' ? '/orders/my?limit=100' : '/orders?limit=100'
+    const path = currentUser.value.role === 'pengecer' ? '/orders/my?limit=100' : '/orders?limit=100'
     const result = await api<{ items: any[] }>(path)
     orders.value = result.items.map((item: any) => ({
       ...item,
@@ -94,6 +115,7 @@ export function useOrders() {
       items: (item.items || []).map((line: any) => ({ ...line, size_kg: products.value.find(p => p.id === line.product_id)?.size_kg || 0 })),
       history: (item.history || []).map((event: any) => ({ ...event, timestamp: event.created_at, note: event.reason || event.note, actor: event.actor_name || event.actor }))
     }))
+    ordersLoaded.value = true
     return orders.value
   }
 
@@ -251,16 +273,16 @@ export function useOrders() {
    * Konfirmasi pesanan (MENUNGGU_KONFIRMASI -> DIKONFIRMASI).
    * Melakukan alokasi atomik ke reserved_qty seluruh item.
    */
-  async function confirmOrder(orderId: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/confirm`, { method: 'POST', body: {} }); await refreshOrders(); return result }
+  async function confirmOrder(orderId: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/confirm`, { method: 'POST', body: {} }); await refreshOrders(true); return result }
 
-  async function rejectOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/reject`, { method: 'POST', body: { reason } }); await refreshOrders(); return result }
+  async function rejectOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/reject`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
 
-  async function cancelOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/cancel`, { method: 'POST', body: { reason } }); await refreshOrders(); return result }
+  async function cancelOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/cancel`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
 
   async function completeOrder(orderId: string, data: CompleteOrderPayload, actor: string): Promise<MockOrder> {
     void actor
     const result = await api<MockOrder>(`/orders/${orderId}/complete`, { method: 'POST', body: { returns: data.returns, payment_type: data.payment_type, amount_paid: data.amount_paid, method: data.payment_method, note: data.note } })
-    await refreshOrders()
+    await refreshOrders(true)
     return result
   }
 
