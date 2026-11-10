@@ -8,7 +8,7 @@ export interface OrderStatusHistory {
   actor_name?: string
 }
 
-export interface MockOrderItem {
+export interface OrderItem {
   product_id: string
   product_name: string
   size_kg: number
@@ -17,7 +17,7 @@ export interface MockOrderItem {
   subtotal: number
 }
 
-export interface MockOrder {
+export interface Order {
   id: string
   number: string
   retailer_id: string
@@ -26,7 +26,7 @@ export interface MockOrder {
   business_name?: string
   status: 'MENUNGGU_KONFIRMASI' | 'DIKONFIRMASI' | 'SELESAI' | 'DITOLAK' | 'DIBATALKAN'
   total: number
-  items: MockOrderItem[]
+  items: OrderItem[]
   created_at: string
   rejection_reason?: string
   cancellation_reason?: string

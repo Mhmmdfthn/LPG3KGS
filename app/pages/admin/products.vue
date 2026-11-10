@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Product as MockProduct } from '~/types/models'
+import type { Product } from '~/types/models'
 import type { CreateProductPayload, UpdateProductPayload } from '~/composables/useProducts'
 
 definePageMeta({ layout: 'admin' })
@@ -110,7 +110,7 @@ const editForm = reactive<UpdateProductPayload & { name: string; size_kg: number
 })
 const editErrors = reactive({ name: '', size_kg: '', price: '', minimum_stock: '' })
 
-function openEditModal(product: MockProduct) {
+function openEditModal(product: Product) {
   editingProductId.value = product.id
   editForm.name = product.name
   editForm.size_kg = product.size_kg
@@ -163,10 +163,10 @@ async function handleUpdateProduct() {
 
 // ─── Modal Konfirmasi Toggle Status ─────────────────────────────
 const isToggleModalOpen = ref(false)
-const productToToggle = ref<MockProduct | null>(null)
+const productToToggle = ref<Product | null>(null)
 const isSubmittingToggle = ref(false)
 
-function promptToggleStatus(product: MockProduct) {
+function promptToggleStatus(product: Product) {
   productToToggle.value = product
   isToggleModalOpen.value = true
 }

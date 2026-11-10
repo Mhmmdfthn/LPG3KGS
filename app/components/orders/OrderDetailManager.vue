@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatRupiah, formatQuantity, formatDateTime } from '~/composables/useFormatters'
-import type { MockOrder } from '~/types/orders'
+import type { Order } from '~/types/orders'
 import type { CompleteOrderPayload } from '~/composables/useOrders'
 
 interface Props {

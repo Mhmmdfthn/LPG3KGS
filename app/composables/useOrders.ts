@@ -1,5 +1,5 @@
-import type { MockOrder, MockOrderItem, OrderStatusHistory } from '~/types/orders'
-import type { Product as MockProduct } from '~/types/models'
+import type { Order } from '~/types/orders'
+import type { Product } from '~/types/models'
 
 export interface CartItem {
   product_id: string
@@ -20,21 +20,20 @@ export interface CompleteOrderPayload {
   note?: string
 }
 
-const CART_STORAGE_KEY = 'lpg3kgs_mock_cart_v1'
-const ORDERS_STORAGE_KEY = 'lpg3kgs_mock_orders_v1'
-const LEGACY_CART_KEY = 'mock_cart_store'
+const CART_STORAGE_KEY = 'lpg3kgs_cart_v1'
+const LEGACY_CART_KEY = 'lpg3kgs_mock_cart_v1'
 
-let inflightOrders: Promise<MockOrder[]> | null = null
+let inflightOrders: Promise<Order[]> | null = null
 
 export function useOrders() {
   const { products, ensureLoaded } = useProducts()
   const { api } = useApi()
 
 // --- Cart State (single reactive store) ---
-  const cart = useState<CartItem[]>('mock_cart_store', () => [])
+  const cart = useState<CartItem[]>('lpg3kgs_cart', () => [])
 
 // --- Orders State (single reactive store) ---
-  const orders = useState<MockOrder[]>('api_orders', () => [])
+  const orders = useState<Order[]>('api_orders', () => [])
   const ordersLoaded = useState<boolean>('api_orders_loaded', () => false)
   const { currentUser } = useAuth()
 
@@ -42,11 +41,13 @@ export function useOrders() {
   if (import.meta.client) {
     onMounted(() => {
       try {
-        const cachedCart = localStorage.getItem(CART_STORAGE_KEY)
+        const cachedCart = localStorage.getItem(CART_STORAGE_KEY) || localStorage.getItem(LEGACY_CART_KEY)
         if (cachedCart) {
           const parsed = JSON.parse(cachedCart)
           if (Array.isArray(parsed)) {
             cart.value = parsed
+            saveCart()
+            localStorage.removeItem(LEGACY_CART_KEY)
           }
         }
         syncCartWithProducts()
@@ -74,20 +75,16 @@ export function useOrders() {
   function syncCartWithProducts() {
     if (!products.value.length) return
     let changed = false
-    const next: CartItem[] = []
-    for (const item of cart.value) {
+    const next: CartItem[] = cart.value.map(item => {
       const product = products.value.find(p => p.id === item.product_id)
-      if (!product) {
-        changed = true
-        continue
-      }
+      // Produk yang tidak lagi ada di katalog tetap ditandai agar pengguna menghapusnya sendiri.
+      if (!product) return item
       if (product.name !== item.product_name || product.price !== item.price || product.size_kg !== item.size_kg) {
         changed = true
-        next.push({ ...item, product_name: product.name, price: product.price, size_kg: product.size_kg })
-      } else {
-        next.push(item)
+        return { ...item, product_name: product.name, price: product.price, size_kg: product.size_kg }
       }
-    }
+      return item
+    })
     if (changed) {
       cart.value = next
       saveCart()
@@ -124,17 +121,7 @@ export function useOrders() {
       try {
         localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart.value))
       } catch (e) {
-        console.warn('[useMockOrders] Gagal menyimpan cart:', e)
-      }
-    }
-  }
-
-  function saveOrders() {
-    if (import.meta.client) {
-      try {
-        localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(orders.value))
-      } catch (e) {
-        console.warn('[useMockOrders] Gagal menyimpan orders:', e)
+        console.warn('[useOrders] Gagal menyimpan cart:', e)
       }
     }
   }
@@ -155,7 +142,7 @@ export function useOrders() {
     return 0
   }
 
-  function addToCart(product: Pick<MockProduct, 'id' | 'name' | 'size_kg' | 'price' | 'active'>, qty: number = 1) {
+  function addToCart(product: Pick<Product, 'id' | 'name' | 'size_kg' | 'price' | 'active'>, qty: number = 1) {
     if (!product.active) {
       throw new Error(`Produk "${product.name}" sedang nonaktif dan tidak dapat dipesan.`)
     }
@@ -223,7 +210,7 @@ export function useOrders() {
   }
 
 // --- Order Actions ---
-  async function createOrder(): Promise<MockOrder> {
+  async function createOrder(): Promise<Order> {
     if (cart.value.length === 0) {
       throw new Error('Keranjang belanja kosong. Silakan pilih produk terlebih dahulu.')
     }
@@ -253,17 +240,17 @@ export function useOrders() {
     const newOrder = {
       ...order,
       items: (order.items || []).map((item: any) => ({ ...item, size_kg: products.value.find(p => p.id === item.product_id)?.size_kg || 0 }))
-    } as MockOrder
+    } as Order
     orders.value.unshift(newOrder)
     clearCart()
     return newOrder
   }
 
-  function getMyOrders(retailerId: string): MockOrder[] {
+  function getMyOrders(retailerId: string): Order[] {
     return orders.value.filter(o => o.retailer_id === retailerId)
   }
 
-  function getOrderById(orderId: string): MockOrder | undefined {
+  function getOrderById(orderId: string): Order | undefined {
     return orders.value.find(o => o.id === orderId || o.number === orderId)
   }
 
@@ -273,15 +260,15 @@ export function useOrders() {
    * Konfirmasi pesanan (MENUNGGU_KONFIRMASI -> DIKONFIRMASI).
    * Melakukan alokasi atomik ke reserved_qty seluruh item.
    */
-  async function confirmOrder(orderId: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/confirm`, { method: 'POST', body: {} }); await refreshOrders(true); return result }
+  async function confirmOrder(orderId: string, actor: string): Promise<Order> { void actor; const result = await api<Order>(`/orders/${orderId}/confirm`, { method: 'POST', body: {} }); await refreshOrders(true); return result }
 
-  async function rejectOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/reject`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
+  async function rejectOrder(orderId: string, reason: string, actor: string): Promise<Order> { void actor; const result = await api<Order>(`/orders/${orderId}/reject`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
 
-  async function cancelOrder(orderId: string, reason: string, actor: string): Promise<MockOrder> { void actor; const result = await api<MockOrder>(`/orders/${orderId}/cancel`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
+  async function cancelOrder(orderId: string, reason: string, actor: string): Promise<Order> { void actor; const result = await api<Order>(`/orders/${orderId}/cancel`, { method: 'POST', body: { reason } }); await refreshOrders(true); return result }
 
-  async function completeOrder(orderId: string, data: CompleteOrderPayload, actor: string): Promise<MockOrder> {
+  async function completeOrder(orderId: string, data: CompleteOrderPayload, actor: string): Promise<Order> {
     void actor
-    const result = await api<MockOrder>(`/orders/${orderId}/complete`, { method: 'POST', body: { returns: data.returns, payment_type: data.payment_type, amount_paid: data.amount_paid, method: data.payment_method, note: data.note } })
+    const result = await api<Order>(`/orders/${orderId}/complete`, { method: 'POST', body: { returns: data.returns, payment_type: data.payment_type, amount_paid: data.amount_paid, method: data.payment_method, note: data.note } })
     await refreshOrders(true)
     return result
   }
@@ -289,9 +276,9 @@ export function useOrders() {
   function resetDefaultOrders() {
     orders.value = []
     cart.value = []
+    ordersLoaded.value = false
     if (import.meta.client) {
       try {
-        localStorage.removeItem(ORDERS_STORAGE_KEY)
         localStorage.removeItem(CART_STORAGE_KEY)
       } catch {}
     }

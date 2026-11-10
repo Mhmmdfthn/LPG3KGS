@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatRupiah, formatQuantity, formatDateTime } from '~/composables/useFormatters'
-import type { MockOrder } from '~/types/orders'
+import type { Order } from '~/types/orders'
 
 interface Props {
   role: 'admin' | 'staff'
@@ -96,7 +96,7 @@ function resetFilters() {
   dateTo.value = ''
 }
 
-function formatProductSummary(items: MockOrder['items']): string {
+function formatProductSummary(items: Order['items']): string {
   if (items.length === 0) return '0 tabung'
   const first = items[0]
   if (!first) return '0 tabung'
@@ -107,11 +107,11 @@ function formatProductSummary(items: MockOrder['items']): string {
 }
 
 // ─── Modal Konfirmasi Cepat dari Antrean ───────────────────────────
-const selectedOrderForAction = ref<MockOrder | null>(null)
+const selectedOrderForAction = ref<Order | null>(null)
 const isConfirmModalOpen = ref(false)
 const isSubmittingConfirm = ref(false)
 
-function openConfirmModal(order: MockOrder) {
+function openConfirmModal(order: Order) {
   selectedOrderForAction.value = order
   isConfirmModalOpen.value = true
 }

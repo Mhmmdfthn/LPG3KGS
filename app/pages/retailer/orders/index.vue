@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatRupiah, formatDateTime } from '~/composables/useFormatters'
-import type { MockOrder } from '~/types/orders'
+import type { Order } from '~/types/orders'
 
 definePageMeta({
   layout: 'retailer'
@@ -49,7 +49,7 @@ watch([searchQuery, statusFilter], () => {
   currentPage.value = 1
 })
 
-function formatProductSummary(items: MockOrder['items']): string {
+function formatProductSummary(items: Order['items']): string {
   if (items.length === 0) return '0 item'
   const first = items[0]
   if (!first) return '0 item'

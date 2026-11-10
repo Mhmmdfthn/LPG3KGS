@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { User as MockUser } from '~/types/models'
+import type { User } from '~/types/models'
 import type { CreateUserPayload } from '~/composables/useAuth'
 
 definePageMeta({
@@ -208,7 +208,7 @@ const editErrors = reactive({
   email: ''
 })
 
-function openEditModal(user: MockUser) {
+function openEditModal(user: User) {
   editingUserId.value = user.id
   editForm.role = user.role as 'pengecer' | 'karyawan'
   editForm.username = user.username
@@ -275,10 +275,10 @@ async function handleUpdateUser() {
 // 3. MODAL TOGGLE STATUS (AKTIFKAN / NONAKTIFKAN)
 // ==========================================
 const isToggleStatusModalOpen = ref(false)
-const userToToggle = ref<MockUser | null>(null)
+const userToToggle = ref<User | null>(null)
 const isSubmittingToggle = ref(false)
 
-function promptToggleStatus(user: MockUser) {
+function promptToggleStatus(user: User) {
   userToToggle.value = user
   isToggleStatusModalOpen.value = true
 }
@@ -309,13 +309,13 @@ async function handleConfirmToggleStatus() {
 // 4. MODAL RESET PASSWORD
 // ==========================================
 const isResetModalOpen = ref(false)
-const userToReset = ref<MockUser | null>(null)
+const userToReset = ref<User | null>(null)
 const resetNewPass = ref('')
 const resetConfirmPass = ref('')
 const resetError = ref('')
 const isSubmittingReset = ref(false)
 
-function promptResetPassword(user: MockUser) {
+function promptResetPassword(user: User) {
   userToReset.value = user
   resetNewPass.value = ''
   resetConfirmPass.value = ''

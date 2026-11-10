@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatRupiah, formatQuantity } from '~/composables/useFormatters'
-import type { Product as MockProduct } from '~/types/models'
+import type { Product } from '~/types/models'
 
 definePageMeta({
   layout: 'retailer'
@@ -57,7 +57,7 @@ function updateQty(productId: string, delta: number, maxAvailable: number) {
   quantities[productId] = updated
 }
 
-function handleAddToCart(product: MockProduct & { available_qty: number }) {
+function handleAddToCart(product: Product & { available_qty: number }) {
   const qty = quantities[product.id] || 1
   try {
     addToCart(product, qty)
