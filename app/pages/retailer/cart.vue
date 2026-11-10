@@ -13,8 +13,16 @@ const {
   removeFromCart,
   clearCart,
   createOrder,
-  getProductAvailableQty
+  syncCartWithProducts
 } = useOrders()
+
+const { products, loaded: productsLoaded, ensureLoaded } = useProducts()
+
+// Stok pengecer berasal dari master produk; muat sekali sebelum validasi.
+onMounted(async () => {
+  await ensureLoaded().catch(() => {})
+  syncCartWithProducts()
+})
 
 const { currentUser } = useAuth()
 const { showSuccess, showError, showWarning } = useNotification()
@@ -27,23 +35,31 @@ const isSubmittingOrder = ref(false)
 // Item keranjang dengan validasi stok terkini
 const cartItemsWithStock = computed(() => {
   return cart.value.map(item => {
-    const available = getProductAvailableQty(item.product_id)
+    const product = products.value.find(p => p.id === item.product_id)
+    const available = product ? Number(product.available_qty ?? 0) : 0
     return {
       ...item,
       available_qty: available,
+      stock_known: !!product,
+      is_missing: productsLoaded.value && !product,
       subtotal: item.price * item.quantity,
-      is_exceeded: item.quantity > available,
-      is_out_of_stock: available <= 0
+      is_exceeded: !!product && item.quantity > available,
+      is_out_of_stock: !!product && available <= 0
     }
   })
 })
 
 // Apakah ada item yang kuantitasnya melebihi stok yang tersedia saat ini
 const hasStockConflict = computed(() => {
-  return cartItemsWithStock.value.some(item => item.is_exceeded || item.is_out_of_stock)
+  return cartItemsWithStock.value.some(item => item.is_exceeded || item.is_out_of_stock || item.is_missing)
 })
 
 function handleQtyChange(productId: string, newQty: number, maxAvailable: number) {
+  const row = cartItemsWithStock.value.find(item => item.product_id === productId)
+  if (!row?.stock_known) {
+    showWarning('Stok produk masih dimuat. Coba lagi sebentar.')
+    return
+  }
   if (newQty < 1) {
     removeFromCart(productId)
     showWarning('Produk dihapus dari keranjang.')
@@ -86,14 +102,7 @@ function openOrderConfirmation() {
 async function handleSubmitOrder() {
   isSubmittingOrder.value = true
   try {
-    const retailerInfo = {
-      retailer_id: currentUser.value?.id ?? 'usr-ret-01',
-      retailer_name: currentUser.value?.name ?? 'Pengecer Demo',
-      retailer_contact: currentUser.value?.contact ?? '085712345678',
-      business_name: currentUser.value?.business_name ?? 'Warung LPG Pengecer'
-    }
-
-    const newOrder = await createOrder(retailerInfo)
+    const newOrder = await createOrder()
     isConfirmSubmitOpen.value = false
 
     showSuccess(
@@ -170,7 +179,7 @@ async function handleSubmitOrder() {
             <div
               v-for="item in cartItemsWithStock"
               :key="item.product_id"
-              :class="['cart-item-row', { 'has-error': item.is_exceeded || item.is_out_of_stock }]"
+              :class="['cart-item-row', { 'has-error': item.is_exceeded || item.is_out_of_stock || item.is_missing }]"
             >
               <div class="item-info">
                 <div class="item-badge-title">
@@ -182,12 +191,16 @@ async function handleSubmitOrder() {
                 </div>
                 <div class="item-stock-notice">
                   Stok pangkalan tersedia:
-                  <strong :class="{ 'text-danger': item.is_out_of_stock }">
-                    {{ formatQuantity(item.available_qty) }}
+                  <strong v-if="!item.stock_known && !item.is_missing" class="text-muted">memuat…</strong>
+                  <strong v-else :class="{ 'text-danger': item.is_out_of_stock || item.is_missing }">
+                    {{ item.is_missing ? 'tidak tersedia' : formatQuantity(item.available_qty) }}
                   </strong>
                 </div>
                 <div v-if="item.is_exceeded" class="item-error-msg">
                   ⚠️ Kuantitas dipesan ({{ item.quantity }}) melebihi stok tersedia ({{ item.available_qty }}).
+                </div>
+                <div v-else-if="item.is_missing" class="item-error-msg">
+                  ⚠️ Produk ini sudah tidak tersedia di katalog. Hapus dari keranjang untuk melanjutkan.
                 </div>
               </div>
 
@@ -205,7 +218,7 @@ async function handleSubmitOrder() {
                   <button
                     type="button"
                     class="qty-btn"
-                    :disabled="item.quantity >= item.available_qty"
+                    :disabled="!item.stock_known || item.quantity >= item.available_qty"
                     title="Tambah"
                     @click="handleQtyChange(item.product_id, item.quantity + 1, item.available_qty)"
                   >

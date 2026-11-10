@@ -3,6 +3,8 @@ import type { Product, PageResult } from '~/types/models'
 export interface CreateProductPayload { name: string; size_kg: number; price: number; minimum_stock: number; active: boolean }
 export type UpdateProductPayload = Partial<CreateProductPayload>
 
+let inflightRefresh: Promise<Product[]> | null = null
+
 export function useProducts() {
   const { api } = useApi()
   const products = useState<Product[]>('api_products', () => [])
@@ -13,6 +15,18 @@ export function useProducts() {
     products.value = result.items.map(product => ({ ...product, size_kg: Number(product.size_kg) }))
     loaded.value = true
     return products.value
+  }
+
+  /**
+   * Memastikan daftar produk sudah dimuat, tanpa memicu request ganda
+   * saat beberapa komponen memanggilnya bersamaan.
+   */
+  async function ensureLoaded(force = false): Promise<Product[]> {
+    if (loaded.value && !force) return products.value
+    if (!inflightRefresh) {
+      inflightRefresh = refresh().finally(() => { inflightRefresh = null })
+    }
+    return inflightRefresh
   }
   async function addProduct(payload: CreateProductPayload) {
     const product = await api<Product>('/products', { method: 'POST', body: payload })
@@ -29,6 +43,6 @@ export function useProducts() {
     if (!product) throw new Error('Produk tidak ditemukan.')
     return updateProduct(id, { active: !product.active })
   }
-  if (import.meta.client) onMounted(() => { if (!loaded.value) refresh().catch(() => {}) })
-  return { products, refresh, addProduct, updateProduct, toggleProductStatus }
+  if (import.meta.client) onMounted(() => { if (!loaded.value) ensureLoaded().catch(() => {}) })
+  return { products, loaded, refresh, ensureLoaded, addProduct, updateProduct, toggleProductStatus }
 }

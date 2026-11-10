@@ -24,7 +24,7 @@ const CART_STORAGE_KEY = 'lpg3kgs_mock_cart_v1'
 const ORDERS_STORAGE_KEY = 'lpg3kgs_mock_orders_v1'
 
 export function useOrders() {
-  const { products } = useProducts()
+  const { products, ensureLoaded } = useProducts()
   const { api } = useApi()
 
 // --- Cart State (single reactive store) ---
@@ -45,15 +45,46 @@ export function useOrders() {
             cart.value = parsed
           }
         }
-
+        syncCartWithProducts()
       } catch (e) {
-        console.warn('[useMockOrders] Gagal memuat cache:', e)
+        console.warn('[useOrders] Gagal memuat cache:', e)
       }
     })
     onMounted(() => { refreshOrders().catch(() => {}) })
+    // Harga/nama/ukuran di keranjang mengikuti data produk terbaru dari server.
+    watch(products, () => syncCartWithProducts())
+  }
+
+  /**
+   * Menyelaraskan item keranjang dengan master produk terbaru supaya total
+   * yang ditampilkan tidak memakai harga lama dari localStorage.
+   */
+  function syncCartWithProducts() {
+    if (!products.value.length) return
+    let changed = false
+    const next: CartItem[] = []
+    for (const item of cart.value) {
+      const product = products.value.find(p => p.id === item.product_id)
+      if (!product) {
+        changed = true
+        continue
+      }
+      if (product.name !== item.product_name || product.price !== item.price || product.size_kg !== item.size_kg) {
+        changed = true
+        next.push({ ...item, product_name: product.name, price: product.price, size_kg: product.size_kg })
+      } else {
+        next.push(item)
+      }
+    }
+    if (changed) {
+      cart.value = next
+      saveCart()
+    }
   }
 
   async function refreshOrders() {
+    // Ukuran tabung pada item pesanan diambil dari master produk.
+    await ensureLoaded().catch(() => {})
     const path = currentUser.value?.role === 'pengecer' ? '/orders/my?limit=100' : '/orders?limit=100'
     const result = await api<{ items: any[] }>(path)
     orders.value = result.items.map((item: any) => ({
@@ -170,17 +201,13 @@ export function useOrders() {
   }
 
 // --- Order Actions ---
-  interface CreateOrderRetailerInfo {
-    retailer_id: string
-    retailer_name: string
-    retailer_contact?: string
-    business_name?: string
-  }
-
-  async function createOrder(retailerInfo: CreateOrderRetailerInfo): Promise<MockOrder> {
+  async function createOrder(): Promise<MockOrder> {
     if (cart.value.length === 0) {
       throw new Error('Keranjang belanja kosong. Silakan pilih produk terlebih dahulu.')
     }
+
+    // Pastikan master produk terbaru sudah dimuat sebelum validasi stok.
+    await ensureLoaded().catch(() => {})
 
     // Validasi stok ulang sebelum submit
     for (const item of cart.value) {
@@ -203,9 +230,7 @@ export function useOrders() {
     })
     const newOrder = {
       ...order,
-      number: order.number,
-      retailer_id: retailerInfo.retailer_id,
-      items: order.items.map((item: any) => ({ ...item, size_kg: products.value.find(p => p.id === item.product_id)?.size_kg || 0 }))
+      items: (order.items || []).map((item: any) => ({ ...item, size_kg: products.value.find(p => p.id === item.product_id)?.size_kg || 0 }))
     } as MockOrder
     orders.value.unshift(newOrder)
     clearCart()
@@ -259,6 +284,7 @@ export function useOrders() {
     updateCartQty,
     removeFromCart,
     clearCart,
+    syncCartWithProducts,
     createOrder,
     confirmOrder,
     rejectOrder,
