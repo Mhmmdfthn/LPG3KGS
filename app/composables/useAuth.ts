@@ -20,6 +20,34 @@ export function useAuth() {
   const isStaff = computed(() => currentUser.value?.role === 'karyawan')
   const isRetailer = computed(() => currentUser.value?.role === 'pengecer')
 
+  /** Buang field kosong agar schema server yang strict tidak menolak request. */
+  function cleanPayload(data: Record<string, any>, omit: string[] = []) {
+    const payload: Record<string, any> = {}
+    for (const [key, value] of Object.entries(data)) {
+      if (omit.includes(key) || value === undefined || value === null) continue
+      if (typeof value === 'string') {
+        const normalized = key === 'password' ? value : value.trim()
+        if (!normalized && key !== 'password') continue
+        payload[key] = normalized
+      } else {
+        payload[key] = value
+      }
+    }
+    return payload
+  }
+
+  /** Sinkronkan satu akun ke cache lokal supaya tabel langsung ikut berubah. */
+  function upsertUser(user: User) {
+    const index = users.value.findIndex(item => item.id === user.id)
+    if (index >= 0) users.value[index] = user
+    else users.value.push(user)
+    return user
+  }
+
+  function resolveRole(id: string, role?: UserRole) {
+    return role ?? users.value.find(item => item.id === id)?.role
+  }
+
   async function refresh() {
     try { currentUser.value = await api<User>('/auth/me') }
     catch { currentUser.value = null }
@@ -55,19 +83,23 @@ export function useAuth() {
   }
   async function approveRetailer(id: string) { return api<User>(`/retailers/${id}/approval`, { method: 'PATCH', body: { approved: true } }) }
   async function rejectRetailer(id: string, reason: string) { return api<User>(`/retailers/${id}/approval`, { method: 'PATCH', body: { approved: false, reason } }) }
-  async function addUser(data: Record<string, any>) { return api<User>(data.role === 'pengecer' ? '/retailers' : '/staff', { method: 'POST', body: data }) }
-  async function updateUser(id: string, data: Record<string, any>) {
-    const role = users.value.find(u => u.id === id)?.role
-    return api<User>(`/${role === 'pengecer' ? 'retailers' : 'staff'}/${id}`, { method: 'PATCH', body: data })
+  async function addUser(data: Record<string, any>) {
+    const resource = data.role === 'pengecer' ? 'retailers' : 'staff'
+    const created = await api<User>(`/${resource}`, { method: 'POST', body: cleanPayload(data, ['role']) })
+    return upsertUser(created)
   }
-  async function toggleUserStatus(id: string) {
-    const user = users.value.find(u => u.id === id)
+  async function updateUser(id: string, data: Record<string, any>, role?: UserRole) {
+    const resource = resolveRole(id, role) === 'pengecer' ? 'retailers' : 'staff'
+    const updated = await api<User>(`/${resource}/${id}`, { method: 'PATCH', body: cleanPayload(data) })
+    return upsertUser(updated)
+  }
+  async function toggleUserStatus(id: string, role?: UserRole) {
+    const user = users.value.find(item => item.id === id)
     if (!user) throw new Error('Pengguna tidak ditemukan.')
-    return updateUser(id, { status: user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' })
+    return updateUser(id, { status: user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' }, role ?? user.role)
   }
-  async function resetUserPassword(id: string, password: string) {
-    const user = users.value.find(u => u.id === id)
-    const resource = user?.role === 'pengecer' ? 'retailers' : 'staff'
+  async function resetUserPassword(id: string, password: string, role?: UserRole) {
+    const resource = resolveRole(id, role) === 'pengecer' ? 'retailers' : 'staff'
     await api(`/${resource}/${id}/reset-password`, { method: 'POST', body: { password } })
   }
 

@@ -260,7 +260,7 @@ async function handleUpdateUser() {
       business_name: editForm.business_name,
       contact: editForm.contact,
       email: editForm.email
-    })
+    }, editForm.role)
 
     showSuccess('Data informasi akun berhasil diperbarui.', 'Perubahan Tersimpan')
     isEditModalOpen.value = false
@@ -289,7 +289,7 @@ async function handleConfirmToggleStatus() {
 
   try {
     await new Promise(resolve => setTimeout(resolve, 350))
-    const updated = await toggleUserStatus(userToToggle.value.id)
+    const updated = await toggleUserStatus(userToToggle.value.id, userToToggle.value.role)
     const isNowActive = updated.status === 'ACTIVE'
 
     showSuccess(
@@ -343,7 +343,7 @@ async function handleConfirmResetPassword() {
   isSubmittingReset.value = true
   try {
     await new Promise(resolve => setTimeout(resolve, 400))
-    await resetUserPassword(userToReset.value.id, resetNewPass.value)
+    await resetUserPassword(userToReset.value.id, resetNewPass.value, userToReset.value.role)
     showSuccess(
       `Kata sandi untuk akun "@${userToReset.value.username}" berhasil direset.`,
       'Reset Sandi Berhasil'
