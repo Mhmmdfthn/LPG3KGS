@@ -30,7 +30,7 @@ async function stock() { return (await ok('GET','/inventory','admin')).items[0] 
 
 before(async () => {
   db = await testDatabase()
-  const app = createApp().use(createBackend(db,{ appOrigin:'http://localhost:3000',sessionHours:12,secureCookies:false }))
+  const app = createApp().use(createBackend(db,{ appOrigin:'http://localhost:3000',sessionHours:12,secureCookies:false,demoLogin:true }))
   server = createServer(toNodeListener(app))
   await new Promise<void>(resolve => server.listen(0,'127.0.0.1',resolve))
   base = 'http://127.0.0.1:'+(server.address() as { port:number }).port
@@ -391,6 +391,38 @@ test('PATCH profil sendiri dan daftar pesanan memuat nama pengecer, item, dan hi
   assert.equal(listed.retailer_name,'retailer')
   assert.equal(listed.items[0].product_name,'LPG 3 kg')
   assert.ok(Array.isArray(listed.history))
+})
+test('demo-roles dan demo-login membuat sesi aktif, audit tercatat, dan 404 jika flag nonaktif',async () => {
+  const rolesData = await ok('GET','/auth/demo-roles')
+  assert.deepEqual(rolesData.roles,['admin','karyawan','pengecer'])
+
+  const demoRes = await api('POST','/auth/demo-login',undefined,{ role:'karyawan' })
+  assert.equal(demoRes.status,200)
+  assert.equal(demoRes.body.data.user.role,'karyawan')
+  assert.ok(demoRes.body.data.token)
+  const setCookie = demoRes.headers.get('set-cookie')
+  assert.ok(setCookie && setCookie.includes('lpg_session='))
+
+  const meRes = await api('GET','/auth/me',undefined,undefined,undefined,{ Authorization:'Bearer '+demoRes.body.data.token })
+  assert.equal(meRes.status,200)
+  assert.equal(meRes.body.data.role,'karyawan')
+
+  assert.equal((await api('POST','/auth/demo-login',undefined,{ role:'superadmin' })).status,422)
+
+  const disabledBackend = createBackend(db,{ appOrigin:'http://localhost:3000',sessionHours:12,secureCookies:false,demoLogin:false })
+  const disabledApp = createApp().use(disabledBackend)
+  const disabledServer = createServer(toNodeListener(disabledApp))
+  await new Promise<void>(resolve => disabledServer.listen(0,'127.0.0.1',resolve))
+  const disabledBase = 'http://127.0.0.1:'+(disabledServer.address() as { port:number }).port
+  try {
+    const r1 = await fetch(disabledBase+'/api/auth/demo-roles')
+    assert.equal(r1.status,404)
+    const r2 = await fetch(disabledBase+'/api/auth/demo-login',{ method:'POST',headers:{ 'Content-Type':'application/json' },body:JSON.stringify({ role:'admin' }) })
+    assert.equal(r2.status,404)
+  } finally {
+    disabledServer.closeAllConnections()
+    await new Promise<void>(resolve => disabledServer.close(() => resolve()))
+  }
 })
 test('PostgreSQL multi-koneksi: dua konfirmasi bersaing tidak overselling', { skip:!process.env.TEST_DATABASE_URL },async () => {
   const a = await order(8), b = await order(8)

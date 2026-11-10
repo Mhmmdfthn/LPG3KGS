@@ -10,7 +10,7 @@ import * as stock from '../services/inventory'
 import * as commerce from '../services/commerce'
 import * as queries from '../services/queries'
 
-export interface BackendConfig { appOrigin: string; sessionHours: number; secureCookies: boolean }
+export interface BackendConfig { appOrigin: string; sessionHours: number; secureCookies: boolean; demoLogin?: boolean }
 type Context = { event: H3Event; actor: Actor; user: Row; token: string; params: Record<string,string>; body: any; filters: v.Filters; key: string }
 type Route = { method: string; path: string; roles?: Actor['role'][]; public?: boolean; schema?: z.ZodType; filters?: boolean; idempotent?: boolean; handle: (ctx: Context) => Promise<any> }
 const internal: Actor['role'][] = ['admin','karyawan']
@@ -47,6 +47,19 @@ export function createBackend(db: Database, config: BackendConfig) {
     setCookie(c.event,'lpg_session',result.token,{ httpOnly:true,secure:config.secureCookies,sameSite:'strict',path:'/',maxAge:config.sessionHours*3600 })
     return result
   } })
+  if (config.demoLogin) {
+    route({ method:'GET',path:'/auth/demo-roles',public:true,handle: async () => {
+      const activeRoles = (await db.query("SELECT DISTINCT role FROM users WHERE status='ACTIVE' AND role IN ('admin','karyawan','pengecer')")).rows.map(r => r.role)
+      const roles = (['admin','karyawan','pengecer'] as const).filter(r => activeRoles.includes(r))
+      return { roles }
+    } })
+    route({ method:'POST',path:'/auth/demo-login',public:true,schema:z.object({ role:z.enum(['admin','karyawan','pengecer']) }).strict(),handle: async c => {
+      await auth.rateLimit(db,'demo-login-ip:'+getRequestIP(c.event),30)
+      const result = await auth.demoLogin(db,c.body.role,config.sessionHours)
+      setCookie(c.event,'lpg_session',result.token,{ httpOnly:true,secure:config.secureCookies,sameSite:'strict',path:'/',maxAge:config.sessionHours*3600 })
+      return result
+    } })
+  }
   route({ method:'POST',path:'/auth/logout',roles:all,schema:z.object({}).strict(),handle: async c => {
     await db.transaction(async tx => {
       await tx.query('DELETE FROM sessions WHERE token_hash=$1',[hash(c.token)])

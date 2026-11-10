@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto'
 import bcrypt from 'bcryptjs'
-import type { Database, Connection } from '../lib/db'
+import type { Database, Connection, Row } from '../lib/db'
 import { audit, fail, hash, id, safeUser, type Actor } from '../lib/core'
 import type { z } from 'zod'
 import type { account } from '../lib/validation'
@@ -24,19 +24,29 @@ export async function createAccount(db: Database, data: z.infer<typeof account>,
     return user
   })
 }
+async function createSession(db: Database, user: Row, hours: number, action: 'LOGIN' | 'DEMO_LOGIN') {
+  const token = randomBytes(32).toString('base64url')
+  const expiresAt = new Date(Date.now() + hours * 3600000).toISOString()
+  await db.transaction(async tx => {
+    const current = (await tx.query('SELECT status,password_hash FROM users WHERE id=$1 FOR SHARE', [user.id])).rows[0]
+    if (!current || current.status !== 'ACTIVE' || current.password_hash !== user.password_hash) {
+      fail(401, 'Kredensial tidak valid atau akun belum aktif.')
+    }
+    await tx.query('INSERT INTO sessions (token_hash,user_id,expires_at) VALUES ($1,$2,$3)', [hash(token), user.id, expiresAt])
+    await audit(tx, user as Actor, action, 'user', user.id)
+  })
+  return { token, expires_at: expiresAt, user: safeUser(user) }
+}
 export async function login(db: Database, identity: string, password: string, hours: number) {
   const user = (await db.query('SELECT * FROM users WHERE username=$1 OR email=$1', [identity.toLowerCase()])).rows[0]
   const valid = await bcrypt.compare(password, user?.password_hash ?? dummyHash)
   if (!valid || user?.status !== 'ACTIVE') fail(401, 'Kredensial tidak valid atau akun belum aktif.')
-  const token = randomBytes(32).toString('base64url')
-  const expiresAt = new Date(Date.now() + hours * 3600000).toISOString()
-  await db.transaction(async tx => {
-    const current = (await tx.query('SELECT status,password_hash FROM users WHERE id=$1 FOR SHARE', [user.id])).rows[0]!
-    if (current.status !== 'ACTIVE' || current.password_hash !== user.password_hash) fail(401, 'Kredensial tidak valid atau akun belum aktif.')
-    await tx.query('INSERT INTO sessions (token_hash,user_id,expires_at) VALUES ($1,$2,$3)', [hash(token), user.id, expiresAt])
-    await audit(tx, user as Actor, 'LOGIN', 'user', user.id)
-  })
-  return { token, expires_at: expiresAt, user: safeUser(user) }
+  return createSession(db, user, hours, 'LOGIN')
+}
+export async function demoLogin(db: Database, role: 'admin' | 'karyawan' | 'pengecer', hours: number) {
+  const user = (await db.query(`SELECT * FROM users WHERE role=$1 AND status='ACTIVE' ORDER BY created_at ASC LIMIT 1`, [role])).rows[0]
+  if (!user) fail(404, 'Akun aktif untuk peran tersebut tidak ditemukan.')
+  return createSession(db, user, hours, 'DEMO_LOGIN')
 }
 export async function authenticate(db: Database, token: string) {
   const user = (await db.query(`SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id

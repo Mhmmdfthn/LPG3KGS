@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import type { UserRole } from '~/types/models'
+
 definePageMeta({
   layout: 'default'
 })
 
-const { login } = useAuth()
+const { login, demoLogin } = useAuth()
+const { api } = useApi()
 const { showSuccess, showError } = useNotification()
 
 const identity = ref('')
@@ -11,43 +14,49 @@ const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
 
-interface DemoAccount {
-  label: string
-  role: 'admin' | 'karyawan' | 'pengecer'
-  username: string
-  password: string
+const roleLabels: Record<UserRole, string> = {
+  admin: 'Admin',
+  karyawan: 'Karyawan',
+  pengecer: 'Pengecer',
 }
 
-const runtimeConfig = useRuntimeConfig()
-const demoAccounts = computed<DemoAccount[]>(() => {
-  // Nilai bisa berupa array (dari nuxt.config) atau string JSON saat di-override env runtime.
-  const raw = runtimeConfig.public.demoAccounts as unknown
-  const accounts = typeof raw === 'string' ? safeParse(raw) : raw
-  if (!Array.isArray(accounts)) return []
-  return accounts.filter((account): account is DemoAccount =>
-    !!account && typeof account.username === 'string' && typeof account.password === 'string'
-  )
-})
-
-function safeParse(raw: string): unknown {
-  try {
-    return JSON.parse(raw)
-  } catch {
-    return []
-  }
-}
-// Tombol cepat hanya muncul saat mode demo aktif (default: hanya di lingkungan dev).
-const showDemoAccounts = computed(() => Boolean(runtimeConfig.public.demoMode) && demoAccounts.value.length > 0)
+const demoRoles = ref<UserRole[]>([])
 const activeDemoRole = ref('')
 
-async function quickLogin(account: DemoAccount) {
-  if (isLoading.value) return
-  activeDemoRole.value = account.role
-  identity.value = account.username
-  password.value = account.password
+onMounted(async () => {
   try {
-    await handleLogin()
+    const res = await api<{ roles: UserRole[] }>('/auth/demo-roles')
+    demoRoles.value = res.roles || []
+  } catch {
+    demoRoles.value = []
+  }
+})
+
+function redirectByRole(role: string) {
+  if (role === 'admin') {
+    navigateTo('/admin')
+  } else if (role === 'karyawan') {
+    navigateTo('/staff')
+  } else {
+    navigateTo('/retailer')
+  }
+}
+
+async function handleDemoLogin(role: UserRole) {
+  if (isLoading.value) return
+  isLoading.value = true
+  activeDemoRole.value = role
+  serverError.value = ''
+
+  try {
+    const loggedUser = await demoLogin(role)
+    showSuccess(`Selamat datang kembali, ${loggedUser.name}!`, 'Masuk Berhasil')
+    redirectByRole(loggedUser.role)
+  } catch (err: any) {
+    serverError.value = err.message || 'Terjadi kesalahan saat masuk demo.'
+    showError(serverError.value, 'Gagal Masuk')
   } finally {
+    isLoading.value = false
     activeDemoRole.value = ''
   }
 }
@@ -86,14 +95,7 @@ async function handleLogin() {
   try {
     const loggedUser = await login(identity.value, password.value)
     showSuccess(`Selamat datang kembali, ${loggedUser.name}!`, 'Masuk Berhasil')
-
-    if (loggedUser.role === 'admin') {
-      navigateTo('/admin')
-    } else if (loggedUser.role === 'karyawan') {
-      navigateTo('/staff')
-    } else {
-      navigateTo('/retailer')
-    }
+    redirectByRole(loggedUser.role)
   } catch (err: any) {
     serverError.value = err.message || 'Terjadi kesalahan saat masuk.'
     showError(serverError.value, 'Gagal Masuk')
@@ -161,28 +163,27 @@ async function handleLogin() {
         </div>
       </form>
 
-      <div v-if="showDemoAccounts" class="demo-login-box">
+      <div v-if="demoRoles.length > 0" class="demo-login-box">
         <div class="demo-login-head">
           <span class="demo-login-tag">Akun demo</span>
           <span class="demo-login-hint">Sekali klik langsung masuk</span>
         </div>
         <div class="demo-login-grid">
           <BaseButton
-            v-for="account in demoAccounts"
-            :key="account.role"
+            v-for="role in demoRoles"
+            :key="role"
             type="button"
             variant="secondary"
             size="sm"
-            :loading="isLoading && activeDemoRole === account.role"
+            :loading="isLoading && activeDemoRole === role"
             :disabled="isLoading"
-            @click="quickLogin(account)"
+            @click="handleDemoLogin(role)"
           >
-            {{ account.label || account.role }}
+            {{ roleLabels[role] || role }}
           </BaseButton>
         </div>
         <p class="demo-login-note">
-          Khusus demo/UAT. Akun dibuat lewat <code>npm run db:seed</code> dengan
-          <code>SEED_DEMO_ACCOUNTS=true</code>.
+          Khusus demo/UAT di lingkungan pengembangan.
         </p>
       </div>
 

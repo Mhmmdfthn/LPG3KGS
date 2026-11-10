@@ -61,6 +61,11 @@ export function useAuth() {
     currentUser.value = result.user
     return result.user
   }
+  async function demoLogin(role: UserRole) {
+    const result = await api<{ user: User }>('/auth/demo-login', { method: 'POST', body: { role } })
+    currentUser.value = result.user
+    return result.user
+  }
   async function register(payload: Record<string, any>) {
     const result = await api<{ user: User }>('/retailer-registrations', { method: 'POST', body: { ...payload, password_confirmation: payload.password_confirmation || payload.password } })
     lastRegisteredUser.value = result.user
@@ -103,5 +108,5 @@ export function useAuth() {
     await api(`/${resource}/${id}/reset-password`, { method: 'POST', body: { password } })
   }
 
-  return { currentUser, users, lastRegisteredUser, isLoggedIn, isAdmin, isStaff, isRetailer, switchRole, refresh, login, register, logout, updateProfile, changePassword, loadAccounts, approveRetailer, rejectRetailer, addUser, updateUser, toggleUserStatus, resetUserPassword }
+  return { currentUser, users, lastRegisteredUser, isLoggedIn, isAdmin, isStaff, isRetailer, switchRole, refresh, login, demoLogin, register, logout, updateProfile, changePassword, loadAccounts, approveRetailer, rejectRetailer, addUser, updateUser, toggleUserStatus, resetUserPassword }
 }
