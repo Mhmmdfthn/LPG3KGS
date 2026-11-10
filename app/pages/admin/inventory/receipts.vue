@@ -12,7 +12,7 @@ const { currentUser } = useAuth()
 // Hanya produk aktif yang dapat dipilih
 const activeProducts = computed(() => products.value.filter(p => p.active))
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Form State ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Form State ───────────────────────────────────────────────────
 const selectedProductId = ref('')
 const fullReceived = ref(0)
 const emptySent = ref(0)
@@ -56,7 +56,7 @@ const previewAvailable = computed(() => {
   return Math.max(0, previewFull.value - selectedBalance.value.reserved_qty)
 })
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Validasi ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Validasi ─────────────────────────────────────────────────────
 function validate(): boolean {
   clearErrors()
   let ok = true
@@ -66,11 +66,11 @@ function validate(): boolean {
     ok = false
   }
   if (!Number.isInteger(fullReceived.value) || fullReceived.value < 0) {
-    formErrors.fullReceived = 'Jumlah tabung penuh harus bilangan bulat ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¥ 0.'
+    formErrors.fullReceived = 'Jumlah tabung penuh harus bilangan bulat ≥ 0.'
     ok = false
   }
   if (!Number.isInteger(emptySent.value) || emptySent.value < 0) {
-    formErrors.emptySent = 'Jumlah tabung kosong harus bilangan bulat ÃƒÂ¢Ã¢â‚¬Â°Ã‚Â¥ 0.'
+    formErrors.emptySent = 'Jumlah tabung kosong harus bilangan bulat ≥ 0.'
     ok = false
   }
   if (fullReceived.value === 0 && emptySent.value === 0) {
@@ -85,7 +85,7 @@ function validate(): boolean {
   return ok
 }
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Modal Konfirmasi ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Modal Konfirmasi ─────────────────────────────────────────────
 const isConfirmOpen = ref(false)
 const isSubmitting = ref(false)
 
@@ -134,11 +134,11 @@ function parsePosInt(e: Event): number {
     <!-- Header -->
     <div class="page-header">
       <div>
-        <h1 class="page-title">ÃƒÂ°Ã…Â¸Ã…Â¡Ã…Â¡ Catat Penerimaan Pasokan Agen</h1>
+        <h1 class="page-title">🚚 Catat Penerimaan Pasokan Agen</h1>
         <p class="page-desc">Catat tabung penuh yang diterima dan tabung kosong yang dikirim kembali ke agen.</p>
       </div>
       <NuxtLink to="/admin/inventory">
-        <BaseButton variant="ghost">ÃƒÂ¢Ã¢â‚¬Â Ã‚Â Ringkasan Stok</BaseButton>
+        <BaseButton variant="ghost">← Ringkasan Stok</BaseButton>
       </NuxtLink>
     </div>
 
@@ -164,7 +164,7 @@ function parsePosInt(e: Event): number {
 
         <!-- Saldo Sekarang (jika produk dipilih) -->
         <div v-if="selectedBalance && selectedProduct" class="current-balance">
-          <p class="balance-title">Saldo Saat Ini ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â {{ selectedProduct.name }}</p>
+          <p class="balance-title">Saldo Saat Ini — {{ selectedProduct.name }}</p>
           <div class="balance-row">
             <div class="balance-item">
               <span class="bal-label">Stok Penuh</span>
@@ -266,7 +266,7 @@ function parsePosInt(e: Event): number {
             <span class="preview-item-label">Stok Penuh</span>
             <span>{{ formatQuantity(selectedBalance.full_qty) }}</span>
             <span :class="fullReceived > 0 ? 'delta-pos' : 'delta-zero'">
-              {{ fullReceived > 0 ? `+${formatQuantity(fullReceived)}` : 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â' }}
+              {{ fullReceived > 0 ? `+${formatQuantity(fullReceived)}` : '—' }}
             </span>
             <span class="preview-after qty-full">{{ formatQuantity(previewFull ?? 0) }}</span>
           </div>
@@ -274,7 +274,7 @@ function parsePosInt(e: Event): number {
             <span class="preview-item-label">Stok Kosong</span>
             <span>{{ formatQuantity(selectedBalance.empty_qty) }}</span>
             <span :class="emptySent > 0 ? 'delta-neg' : 'delta-zero'">
-              {{ emptySent > 0 ? `-${formatQuantity(emptySent)}` : 'ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â' }}
+              {{ emptySent > 0 ? `-${formatQuantity(emptySent)}` : '—' }}
             </span>
             <span :class="['preview-after', (previewEmpty ?? 0) < 0 ? 'qty-low' : 'qty-empty']">
               {{ formatQuantity(previewEmpty ?? 0) }}
@@ -289,18 +289,18 @@ function parsePosInt(e: Event): number {
           <div class="preview-row preview-highlight">
             <span class="preview-item-label">Tersedia</span>
             <span>{{ formatQuantity(selectedBalance.available_qty) }}</span>
-            <span>ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢</span>
+            <span>→</span>
             <span class="preview-after qty-available">{{ formatQuantity(previewAvailable ?? 0) }}</span>
           </div>
         </div>
         <p class="preview-rule-note">
-          Stok tersedia = Stok Penuh ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢ Dialokasikan (min. 0).
+          Stok tersedia = Stok Penuh − Dialokasikan (min. 0).
           Tabung kosong bukan stok jual.
         </p>
 
         <!-- Peringatan saldo negatif -->
         <div v-if="(previewEmpty ?? 0) < 0" class="preview-warning">
-          ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Jumlah tabung kosong yang dikirim melebihi saldo kosong saat ini. Kurangi jumlah pengiriman.
+          ⚠️ Jumlah tabung kosong yang dikirim melebihi saldo kosong saat ini. Kurangi jumlah pengiriman.
         </div>
       </div>
     </div>
@@ -356,7 +356,7 @@ function parsePosInt(e: Event): number {
           Batal
         </BaseButton>
         <BaseButton variant="primary" :loading="isSubmitting" @click="handleConfirm">
-          ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¦ Konfirmasi & Simpan
+          ✅ Konfirmasi & Simpan
         </BaseButton>
       </template>
     </BaseModal>

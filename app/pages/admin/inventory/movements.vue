@@ -8,7 +8,7 @@ const { movements, balances } = useInventory()
 const { products } = useProducts()
 const { showSuccess, showError } = useNotification()
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Filter & Pencarian Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Filter & Pencarian ───────────────────────────────────────────
 const searchQuery = ref('')
 const productFilter = ref('ALL')
 const typeFilter = ref<'ALL' | MovementType>('ALL')
@@ -75,7 +75,7 @@ watch([searchQuery, productFilter, typeFilter, dateFrom, dateTo], () => {
   currentPage.value = 1
 })
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Detail Modal Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Detail Modal ─────────────────────────────────────────────────
 const selectedMovement = ref<StockMovement | null>(null)
 const isDetailOpen = ref(false)
 
@@ -110,12 +110,12 @@ function resetFilters() {
     <!-- Header -->
     <div class="page-header">
       <div>
-        <h1 class="page-title">Ã°Å¸â€œÅ“ Riwayat Pergerakan Stok</h1>
+        <h1 class="page-title">📜 Riwayat Pergerakan Stok</h1>
         <p class="page-desc">Catatan seluruh perubahan saldo inventaris. Baca-saja.</p>
       </div>
       <div class="page-actions">
         <NuxtLink to="/admin/inventory">
-          <BaseButton variant="ghost">Ã¢â€ Â Ringkasan Stok</BaseButton>
+          <BaseButton variant="ghost">← Ringkasan Stok</BaseButton>
         </NuxtLink>
       </div>
     </div>
@@ -173,8 +173,8 @@ function resetFilters() {
             <th>Waktu</th>
             <th>Produk</th>
             <th>Jenis</th>
-            <th class="text-right">ÃŽâ€ Penuh</th>
-            <th class="text-right">ÃŽâ€ Kosong</th>
+            <th class="text-right">Δ Penuh</th>
+            <th class="text-right">Δ Kosong</th>
             <th class="text-right">Saldo Penuh</th>
             <th>Keterangan</th>
             <th>Pelaku</th>
@@ -210,7 +210,7 @@ function resetFilters() {
             </td>
             <td class="text-right td-balance">
               <span class="bal-before">{{ formatQuantity(m.full_before) }}</span>
-              <span class="bal-arrow"> Ã¢â€ â€™ </span>
+              <span class="bal-arrow"> → </span>
               <span class="bal-after">{{ formatQuantity(m.full_after) }}</span>
             </td>
             <td class="td-reason">{{ m.reason }}</td>
@@ -240,11 +240,11 @@ function resetFilters() {
         <p class="mov-product">{{ getProductName(m.product_id) }}</p>
         <div class="mov-deltas">
           <div class="mov-delta-row">
-            <span class="delta-label">ÃŽâ€ Stok Penuh:</span>
+            <span class="delta-label">Δ Stok Penuh:</span>
             <span :class="deltaCls(m.full_delta)">{{ formatDelta(m.full_delta) }}</span>
           </div>
           <div class="mov-delta-row">
-            <span class="delta-label">ÃŽâ€ Stok Kosong:</span>
+            <span class="delta-label">Δ Stok Kosong:</span>
             <span :class="deltaCls(m.empty_delta)">{{ formatDelta(m.empty_delta) }}</span>
           </div>
         </div>
@@ -285,11 +285,11 @@ function resetFilters() {
             </span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">ÃŽâ€ Stok Penuh</span>
+            <span class="detail-label">Δ Stok Penuh</span>
             <span :class="deltaCls(selectedMovement.full_delta)">{{ formatDelta(selectedMovement.full_delta) }}</span>
           </div>
           <div class="detail-row">
-            <span class="detail-label">ÃŽâ€ Stok Kosong</span>
+            <span class="detail-label">Δ Stok Kosong</span>
             <span :class="deltaCls(selectedMovement.empty_delta)">{{ formatDelta(selectedMovement.empty_delta) }}</span>
           </div>
           <hr />

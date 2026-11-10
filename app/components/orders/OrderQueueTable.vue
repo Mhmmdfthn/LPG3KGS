@@ -15,7 +15,7 @@ const { showSuccess, showError } = useNotification()
 
 const basePath = computed(() => (props.role === 'admin' ? '/admin/orders' : '/staff/orders'))
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Filter & Search States ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Filter & Search States ───────────────────────────────────────
 const searchQuery = ref('')
 const statusFilter = ref<string>('ALL')
 const dateFrom = ref('')
@@ -106,7 +106,7 @@ function formatProductSummary(items: MockOrder['items']): string {
   return `${first.quantity}x ${first.product_name} (+${items.length - 1} jenis lain)`
 }
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Modal Konfirmasi Cepat dari Antrean ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Modal Konfirmasi Cepat dari Antrean ───────────────────────────
 const selectedOrderForAction = ref<MockOrder | null>(null)
 const isConfirmModalOpen = ref(false)
 const isSubmittingConfirm = ref(false)
@@ -140,7 +140,7 @@ async function handleConfirmSubmit() {
     <!-- Header -->
     <div class="queue-header">
       <div>
-        <h1 class="page-title">ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ Pesanan Masuk (Antrean Operasional)</h1>
+        <h1 class="page-title">📥 Pesanan Masuk (Antrean Operasional)</h1>
         <p class="page-desc">
           Kelola pesanan dari seluruh pengecer resmi. Konfirmasi ketersediaan stok fisik dan lakukan serah-terima.
         </p>
@@ -149,14 +149,14 @@ async function handleConfirmSubmit() {
       <!-- Counter Badges -->
       <div class="header-badges">
         <div v-if="pendingCount > 0" class="counter-badge badge-pending">
-          <span class="badge-icon">ÃƒÂ¢Ã‚ÂÃ‚Â³</span>
+          <span class="badge-icon">⏳</span>
           <div>
             <span class="badge-num">{{ pendingCount }}</span>
             <span class="badge-lbl">Menunggu Konfirmasi</span>
           </div>
         </div>
         <div v-if="confirmedCount > 0" class="counter-badge badge-confirmed">
-          <span class="badge-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¦</span>
+          <span class="badge-icon">📦</span>
           <div>
             <span class="badge-num">{{ confirmedCount }}</span>
             <span class="badge-lbl">Siap Serah-Terima</span>
@@ -170,7 +170,7 @@ async function handleConfirmSubmit() {
       <!-- Search & Status Tabs -->
       <div class="filter-top-row">
         <div class="search-wrap">
-          <span class="search-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â</span>
+          <span class="search-icon">🔍</span>
           <input
             v-model="searchQuery"
             type="search"
@@ -183,7 +183,7 @@ async function handleConfirmSubmit() {
             class="clear-btn"
             @click="searchQuery = ''"
           >
-            ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢
+            ✕
           </button>
         </div>
 
@@ -299,12 +299,12 @@ async function handleConfirmSubmit() {
                   title="Konfirmasi Pesanan"
                   @click="openConfirmModal(order)"
                 >
-                  ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Konfirmasi
+                  ✓ Konfirmasi
                 </BaseButton>
 
                 <NuxtLink :to="`${basePath}/${order.id}`">
                   <BaseButton variant="secondary" size="sm">
-                    Detail ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢
+                    Detail →
                   </BaseButton>
                 </NuxtLink>
               </div>
@@ -331,7 +331,7 @@ async function handleConfirmSubmit() {
 
         <div class="card-body">
           <div class="m-retailer-info">
-            <span class="m-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚Â¤</span>
+            <span class="m-icon">👤</span>
             <div>
               <strong>{{ order.retailer_name }}</strong>
               <small v-if="order.business_name"> ({{ order.business_name }})</small>
@@ -339,7 +339,7 @@ async function handleConfirmSubmit() {
           </div>
 
           <div class="m-items-info">
-            <span class="m-icon">ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â·ÃƒÂ¯Ã‚Â¸Ã‚Â</span>
+            <span class="m-icon">🏷️</span>
             <div>
               <span class="m-type-count">{{ order.items.length }} jenis:</span>
               <span class="m-summary-text">{{ formatProductSummary(order.items) }}</span>
@@ -363,12 +363,12 @@ async function handleConfirmSubmit() {
               size="sm"
               @click="openConfirmModal(order)"
             >
-              ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Konfirmasi
+              ✓ Konfirmasi
             </BaseButton>
 
             <NuxtLink :to="`${basePath}/${order.id}`">
               <BaseButton variant="secondary" size="sm">
-                Detail ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢
+                Detail →
               </BaseButton>
             </NuxtLink>
           </div>
@@ -417,7 +417,7 @@ async function handleConfirmSubmit() {
           </div>
 
           <div class="rule-reminder">
-            ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â <strong>Dampak Operasional:</strong> Konfirmasi ini akan menambah kuantitas tabung ke
+            ⚠️ <strong>Dampak Operasional:</strong> Konfirmasi ini akan menambah kuantitas tabung ke
             saldo <em>reserved_qty</em> (dialokasikan). Stok fisik belum dipotong sampai serah-terima
             selesai dilakukan.
           </div>
@@ -437,7 +437,7 @@ async function handleConfirmSubmit() {
           :loading="isSubmittingConfirm"
           @click="handleConfirmSubmit"
         >
-          ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ Ya, Konfirmasi Pesanan
+          ✓ Ya, Konfirmasi Pesanan
         </BaseButton>
       </template>
     </BaseModal>

@@ -78,7 +78,7 @@ function openDetail(m: StockMovement) {
 function formatDelta(val: number): string {
   if (val > 0) return `+${formatQuantity(val)}`
   if (val < 0) return `${formatQuantity(val)}`
-  return 'Ã¢â‚¬â€'
+  return '—'
 }
 
 function deltaCls(val: number): string {
@@ -98,11 +98,11 @@ function resetFilters() {
   <div class="page-movements">
     <div class="page-header">
       <div>
-        <h1 class="page-title">Ã°Å¸â€œÅ“ Riwayat Pergerakan Stok</h1>
+        <h1 class="page-title">📜 Riwayat Pergerakan Stok</h1>
         <p class="page-desc">Catatan perubahan saldo inventaris. Baca-saja.</p>
       </div>
       <NuxtLink to="/staff/inventory">
-        <BaseButton variant="ghost">Ã¢â€ Â Ringkasan Stok</BaseButton>
+        <BaseButton variant="ghost">← Ringkasan Stok</BaseButton>
       </NuxtLink>
     </div>
 
@@ -150,8 +150,8 @@ function resetFilters() {
             <th>Waktu</th>
             <th>Produk</th>
             <th>Jenis</th>
-            <th class="text-right">ÃŽâ€ Penuh</th>
-            <th class="text-right">ÃŽâ€ Kosong</th>
+            <th class="text-right">Δ Penuh</th>
+            <th class="text-right">Δ Kosong</th>
             <th>Keterangan</th>
             <th>Pelaku</th>
           </tr>
@@ -187,8 +187,8 @@ function resetFilters() {
         </div>
         <p class="mov-product">{{ getProductName(m.product_id) }}</p>
         <div class="mov-deltas">
-          <div class="mov-delta-row"><span class="dl">ÃŽâ€ Penuh:</span><span :class="deltaCls(m.full_delta)">{{ formatDelta(m.full_delta) }}</span></div>
-          <div class="mov-delta-row"><span class="dl">ÃŽâ€ Kosong:</span><span :class="deltaCls(m.empty_delta)">{{ formatDelta(m.empty_delta) }}</span></div>
+          <div class="mov-delta-row"><span class="dl">Δ Penuh:</span><span :class="deltaCls(m.full_delta)">{{ formatDelta(m.full_delta) }}</span></div>
+          <div class="mov-delta-row"><span class="dl">Δ Kosong:</span><span :class="deltaCls(m.empty_delta)">{{ formatDelta(m.empty_delta) }}</span></div>
         </div>
         <p class="mov-reason">{{ m.reason }}</p>
       </div>
@@ -202,8 +202,8 @@ function resetFilters() {
           <div class="detail-row"><span class="detail-label">Waktu</span><span class="detail-val">{{ formatDateTime(selectedMovement.created_at) }}</span></div>
           <div class="detail-row"><span class="detail-label">Produk</span><span class="detail-val">{{ getProductName(selectedMovement.product_id) }}</span></div>
           <div class="detail-row"><span class="detail-label">Jenis</span><span :class="['type-badge', movementTypeBadge[selectedMovement.type]]">{{ movementTypeLabels[selectedMovement.type] }}</span></div>
-          <div class="detail-row"><span class="detail-label">ÃŽâ€ Stok Penuh</span><span :class="deltaCls(selectedMovement.full_delta)">{{ formatDelta(selectedMovement.full_delta) }}</span></div>
-          <div class="detail-row"><span class="detail-label">ÃŽâ€ Stok Kosong</span><span :class="deltaCls(selectedMovement.empty_delta)">{{ formatDelta(selectedMovement.empty_delta) }}</span></div>
+          <div class="detail-row"><span class="detail-label">Δ Stok Penuh</span><span :class="deltaCls(selectedMovement.full_delta)">{{ formatDelta(selectedMovement.full_delta) }}</span></div>
+          <div class="detail-row"><span class="detail-label">Δ Stok Kosong</span><span :class="deltaCls(selectedMovement.empty_delta)">{{ formatDelta(selectedMovement.empty_delta) }}</span></div>
           <hr />
           <div class="detail-row"><span class="detail-label">Penuh Sesudah</span><span class="detail-val fw-bold">{{ formatQuantity(selectedMovement.full_after) }}</span></div>
           <div class="detail-row"><span class="detail-label">Kosong Sesudah</span><span class="detail-val fw-bold">{{ formatQuantity(selectedMovement.empty_after) }}</span></div>

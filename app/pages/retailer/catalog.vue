@@ -11,7 +11,7 @@ const { balances } = useInventory()
 const { cartCount, cartTotal, addToCart, getProductAvailableQty } = useOrders()
 const { showSuccess, showError } = useNotification()
 
-// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Filter & Search ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// ─── Filter & Search ──────────────────────────────────────────────
 const searchQuery = ref('')
 const sizeFilter = ref<'ALL' | '3' | '5.5' | '12'>('ALL')
 
@@ -87,19 +87,19 @@ function handleAddToCart(product: MockProduct & { available_qty: number }) {
       </div>
 
       <NuxtLink to="/retailer/cart" class="cart-pill-link">
-        <span class="cart-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â</span>
+        <span class="cart-icon">🛍️</span>
         <div class="cart-info">
           <span class="cart-count-text">Keranjang ({{ cartCount }})</span>
           <span class="cart-total-text">{{ formatRupiah(cartTotal) }}</span>
         </div>
-        <span class="cart-arrow">ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢</span>
+        <span class="cart-arrow">→</span>
       </NuxtLink>
     </div>
 
     <!-- Search & Filter Controls -->
     <div class="catalog-controls">
       <div class="search-box">
-        <span class="search-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â</span>
+        <span class="search-icon">🔍</span>
         <input
           v-model="searchQuery"
           type="search"
@@ -112,7 +112,7 @@ function handleAddToCart(product: MockProduct & { available_qty: number }) {
           class="clear-search-btn"
           @click="searchQuery = ''"
         >
-          ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢
+          ✕
         </button>
       </div>
 
@@ -212,7 +212,7 @@ function handleAddToCart(product: MockProduct & { available_qty: number }) {
                 title="Kurangi"
                 @click="updateQty(prod.id, -1, prod.available_qty)"
               >
-                ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢
+                −
               </button>
               <input
                 type="number"
@@ -244,7 +244,7 @@ function handleAddToCart(product: MockProduct & { available_qty: number }) {
           </div>
 
           <div v-else class="out-of-stock-alert">
-            <span class="alert-icon">ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â</span>
+            <span class="alert-icon">⚠️</span>
             <span>Stok saat ini kosong. Harap tunggu pasokan agen berikutnya.</span>
           </div>
         </div>

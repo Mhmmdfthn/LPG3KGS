@@ -29,7 +29,7 @@ function tryLoginPending() {
 <template>
   <div class="pending-wrapper container">
     <div class="pending-card">
-      <div class="pending-icon" aria-hidden="true">â³</div>
+      <div class="pending-icon" aria-hidden="true">⏳</div>
 
       <div class="status-badge-wrap">
         <StatusBadge status="PENDING" label="STATUS: MENUNGGU PERSETUJUAN" size="md" />

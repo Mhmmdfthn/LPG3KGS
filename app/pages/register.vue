@@ -46,7 +46,7 @@ function validate(): boolean {
   }
 
   if (!form.username || !/^[a-z0-9_.-]{3,50}$/.test(form.username.trim())) {
-    errors.username = 'Username wajib huruf kecil/angka (3â€“50 karakter: a-z, 0-9, _, ., -).'
+    errors.username = 'Username wajib huruf kecil/angka (3–50 karakter: a-z, 0-9, _, ., -).'
     valid = false
   }
 
@@ -140,12 +140,12 @@ function autoFill(type: 'valid' | 'duplicate_user' | 'mismatch_pass') {
 
       <!-- Notice: No NIK/KTP required -->
       <div class="privacy-notice">
-        ðŸ”’ <strong>Privasi & Kepatuhan:</strong> Website pangkalan tidak meminta atau menyimpan NIK/KTP. Pendataan resmi konsumen LPG 3 kg bersubsidi tetap dilakukan melalui aplikasi resmi Pertamina (MAP) di luar website ini.
+        🔒 <strong>Privasi & Kepatuhan:</strong> Website pangkalan tidak meminta atau menyimpan NIK/KTP. Pendataan resmi konsumen LPG 3 kg bersubsidi tetap dilakukan melalui aplikasi resmi Pertamina (MAP) di luar website ini.
       </div>
 
       <!-- Alert Error Banner jika pendaftaran gagal/duplikat -->
       <div v-if="globalError" class="register-error-banner" role="alert">
-        <span class="error-banner-icon">âš ï¸</span>
+        <span class="error-banner-icon">⚠️</span>
         <div class="error-banner-text">{{ globalError }}</div>
       </div>
 
@@ -188,7 +188,7 @@ function autoFill(type: 'valid' | 'duplicate_user' | 'mismatch_pass') {
               v-model="form.username"
               label="Username Akun"
               placeholder="warung_anda (huruf kecil)"
-              helper-text="Digunakan saat masuk ke sistem (3â€“50 karakter: a-z, 0-9, _, ., -)"
+              helper-text="Digunakan saat masuk ke sistem (3–50 karakter: a-z, 0-9, _, ., -)"
               :error-text="errors.username"
               required
             />

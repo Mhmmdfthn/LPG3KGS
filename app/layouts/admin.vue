@@ -10,30 +10,30 @@ const navGroups = [
   {
     title: 'Ringkasan Usaha',
     items: [
-      { label: 'Dashboard', to: '/admin', icon: 'Ã°Å¸â€œÅ ' }
+      { label: 'Dashboard', to: '/admin', icon: '📊' }
     ]
   },
   {
     title: 'Manajemen Pengguna',
     items: [
-      { label: 'Kelola Pengguna', to: '/admin/users', icon: 'Ã°Å¸â€˜Â¥' },
-      { label: 'Persetujuan Pengecer', to: '/admin/users/pending', icon: 'Ã¢ÂÂ³' }
+      { label: 'Kelola Pengguna', to: '/admin/users', icon: '👥' },
+      { label: 'Persetujuan Pengecer', to: '/admin/users/pending', icon: '⏳' }
     ]
   },
   {
     title: 'Katalog & Inventaris',
     items: [
-      { label: 'Produk & Harga', to: '/admin/products', icon: 'Ã°Å¸ÂÂ·Ã¯Â¸Â' },
-      { label: 'Ringkasan Stok', to: '/admin/inventory', icon: 'Ã°Å¸â€œÂ¦' },
-      { label: 'Catat Pasokan Agen', to: '/admin/inventory/receipts', icon: 'Ã°Å¸Å¡Å¡' },
-      { label: 'Riwayat Pergerakan Stok', to: '/admin/inventory/movements', icon: 'Ã°Å¸â€œÅ“' },
-      { label: 'Koreksi Stok Fisik', to: '/admin/inventory/adjustments', icon: 'Ã¢Å¡â„¢Ã¯Â¸Â' }
+      { label: 'Produk & Harga', to: '/admin/products', icon: '🏷️' },
+      { label: 'Ringkasan Stok', to: '/admin/inventory', icon: '📦' },
+      { label: 'Catat Pasokan Agen', to: '/admin/inventory/receipts', icon: '🚚' },
+      { label: 'Riwayat Pergerakan Stok', to: '/admin/inventory/movements', icon: '📜' },
+      { label: 'Koreksi Stok Fisik', to: '/admin/inventory/adjustments', icon: '⚙️' }
     ]
   },
   {
     title: 'Pesanan & Transaksi',
     items: [
-      { label: 'Pesanan Masuk', to: '/admin/orders', icon: 'Ã°Å¸â€œÂ¥' },
+      { label: 'Pesanan Masuk', to: '/admin/orders', icon: '📥' },
     ]
   },
 ]
@@ -44,7 +44,7 @@ const navGroups = [
     <!-- Top Header -->
     <NavbarHeader
       role="admin"
-      title="Admin Panel Ã¢â‚¬â€ LPG3KGS"
+      title="Admin Panel — LPG3KGS"
       @toggle-sidebar="isMobileDrawerOpen = !isMobileDrawerOpen"
     />
 
@@ -89,7 +89,7 @@ const navGroups = [
             <span class="brand-badge">ADMIN</span>
             <span class="drawer-title">Menu Utama</span>
           </div>
-          <button type="button" class="drawer-close-btn" @click="closeDrawer">Ã¢Å“â€¢</button>
+          <button type="button" class="drawer-close-btn" @click="closeDrawer">✕</button>
         </div>
 
         <nav class="drawer-nav">

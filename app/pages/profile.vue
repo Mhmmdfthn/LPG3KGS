@@ -125,7 +125,7 @@ function handleLogout() {
 
         <div class="top-actions">
           <BaseButton variant="danger" size="sm" @click="isLogoutModalOpen = true">
-            ðŸšª Keluar Akun
+            🚪 Keluar Akun
           </BaseButton>
         </div>
       </div>
@@ -140,7 +140,7 @@ function handleLogout() {
               size="sm"
               @click="isEditingProfile = true"
             >
-              âœï¸ Edit
+              ✏️ Edit
             </BaseButton>
           </template>
 
@@ -214,7 +214,7 @@ function handleLogout() {
         <BaseCard title="Ubah Kata Sandi Akun" subtitle="Perbarui kata sandi untuk keamanan akses pangkalan" class="lg-span-2">
           <!-- Password Error Banner -->
           <div v-if="passError" class="pass-error-banner mb-4" role="alert">
-            <span>âš ï¸</span>
+            <span>⚠️</span>
             <span>{{ passError }}</span>
           </div>
 

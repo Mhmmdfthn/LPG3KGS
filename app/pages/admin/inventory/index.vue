@@ -7,7 +7,7 @@ const { products } = useProducts()
 const { balances } = useInventory()
 const { showSuccess } = useNotification()
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Filter & Pencarian Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Filter & Pencarian ───────────────────────────────────────────
 const searchQuery = ref('')
 const statusFilter = ref<'ALL' | 'ACTIVE' | 'INACTIVE' | 'LOW_STOCK'>('ALL')
 
@@ -59,7 +59,7 @@ const filteredRows = computed(() => {
   })
 })
 
-// Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬ Summary Counter Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+// ─── Summary Counter ─────────────────────────────────────────────
 const totalFull = computed(() => inventoryRows.value.reduce((s, r) => s + r.full_qty, 0))
 const totalEmpty = computed(() => inventoryRows.value.reduce((s, r) => s + r.empty_qty, 0))
 const totalAvailable = computed(() => inventoryRows.value.reduce((s, r) => s + r.available_qty, 0))
@@ -73,15 +73,15 @@ const today = computed(() => formatDate(new Date().toISOString()))
     <!-- Page Header -->
     <div class="page-header">
       <div class="page-header-content">
-        <h1 class="page-title">Ã°Å¸â€œÂ¦ Ringkasan Stok</h1>
+        <h1 class="page-title">📦 Ringkasan Stok</h1>
         <p class="page-desc">Saldo stok real-time per produk. Data per {{ today }}.</p>
       </div>
       <div class="page-actions">
         <NuxtLink to="/admin/inventory/receipts">
-          <BaseButton variant="primary">Ã°Å¸Å¡Å¡ Catat Pasokan</BaseButton>
+          <BaseButton variant="primary">🚚 Catat Pasokan</BaseButton>
         </NuxtLink>
         <NuxtLink to="/admin/inventory/adjustments">
-          <BaseButton variant="secondary">Ã¢Å¡â„¢Ã¯Â¸Â Koreksi Stok</BaseButton>
+          <BaseButton variant="secondary">⚙️ Koreksi Stok</BaseButton>
         </NuxtLink>
       </div>
     </div>
@@ -89,7 +89,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
     <!-- Summary Cards -->
     <div class="summary-grid">
       <div class="summary-card summary-full">
-        <div class="summary-icon">Ã°Å¸Å¸Â¢</div>
+        <div class="summary-icon">🟢</div>
         <div class="summary-body">
           <p class="summary-label">Total Stok Penuh</p>
           <p class="summary-value">{{ formatQuantity(totalFull) }}</p>
@@ -97,7 +97,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
         </div>
       </div>
       <div class="summary-card summary-empty">
-        <div class="summary-icon">Ã¢Å¡Âª</div>
+        <div class="summary-icon">⚪</div>
         <div class="summary-body">
           <p class="summary-label">Total Stok Kosong</p>
           <p class="summary-value">{{ formatQuantity(totalEmpty) }}</p>
@@ -105,15 +105,15 @@ const today = computed(() => formatDate(new Date().toISOString()))
         </div>
       </div>
       <div class="summary-card summary-available">
-        <div class="summary-icon">Ã¢Å“â€¦</div>
+        <div class="summary-icon">✅</div>
         <div class="summary-body">
           <p class="summary-label">Tersedia untuk Dipesan</p>
           <p class="summary-value">{{ formatQuantity(totalAvailable) }}</p>
-          <p class="summary-note">Penuh Ã¢Ë†â€™ Dialokasikan</p>
+          <p class="summary-note">Penuh − Dialokasikan</p>
         </div>
       </div>
       <div :class="['summary-card', lowStockCount > 0 ? 'summary-warning' : 'summary-ok']">
-        <div class="summary-icon">{{ lowStockCount > 0 ? 'Ã¢Å¡Â Ã¯Â¸Â' : 'Ã°Å¸â€˜Â' }}</div>
+        <div class="summary-icon">{{ lowStockCount > 0 ? '⚠️' : '👍' }}</div>
         <div class="summary-body">
           <p class="summary-label">Produk Stok Rendah</p>
           <p class="summary-value">{{ lowStockCount }} produk</p>
@@ -124,13 +124,13 @@ const today = computed(() => formatDate(new Date().toISOString()))
 
     <!-- Low Stock Alert -->
     <div v-if="lowStockCount > 0" class="alert-low-stock">
-      Ã¢Å¡Â Ã¯Â¸Â <strong>{{ lowStockCount }} produk</strong> berada di bawah ambang stok minimum. Pertimbangkan segera mencatat pasokan dari agen.
+      ⚠️ <strong>{{ lowStockCount }} produk</strong> berada di bawah ambang stok minimum. Pertimbangkan segera mencatat pasokan dari agen.
     </div>
 
     <!-- PRD Rule Note -->
     <div class="rule-note">
       <strong>Catatan:</strong> Stok penuh dan stok kosong adalah saldo yang berbeda dan tidak dijumlahkan.
-      Stok tersedia = Stok Penuh Ã¢Ë†â€™ Dialokasikan (minimum 0). Tabung kosong bukan stok jual.
+      Stok tersedia = Stok Penuh − Dialokasikan (minimum 0). Tabung kosong bukan stok jual.
     </div>
 
     <!-- Filter Bar -->
@@ -149,7 +149,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
             { val: 'ALL', label: 'Semua' },
             { val: 'ACTIVE', label: 'Aktif' },
             { val: 'INACTIVE', label: 'Nonaktif' },
-            { val: 'LOW_STOCK', label: 'Ã¢Å¡Â Ã¯Â¸Â Stok Rendah' }
+            { val: 'LOW_STOCK', label: '⚠️ Stok Rendah' }
           ]"
           :key="opt.val"
           :class="['filter-btn', { active: statusFilter === opt.val }]"
@@ -199,7 +199,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
             <td class="text-right">
               <span :class="['qty-available', { 'qty-low': row.low_stock && row.active }]">
                 {{ formatQuantity(row.available_qty) }}
-                <span v-if="row.low_stock && row.active" class="low-badge">Ã¢Å¡Â Ã¯Â¸Â</span>
+                <span v-if="row.low_stock && row.active" class="low-badge">⚠️</span>
               </span>
             </td>
             <td class="text-right qty-min">{{ formatQuantity(row.minimum_stock) }}</td>
@@ -248,7 +248,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
             <span class="inv-label">Tersedia</span>
             <span :class="['inv-val', 'qty-available', { 'qty-low': row.low_stock && row.active }]">
               {{ formatQuantity(row.available_qty) }}
-              <span v-if="row.low_stock && row.active"> Ã¢Å¡Â Ã¯Â¸Â</span>
+              <span v-if="row.low_stock && row.active"> ⚠️</span>
             </span>
           </div>
           <div class="inv-card-row">
@@ -257,7 +257,7 @@ const today = computed(() => formatDate(new Date().toISOString()))
           </div>
         </div>
         <div v-if="row.low_stock && row.active" class="inv-card-alert">
-          Ã¢Å¡Â Ã¯Â¸Â Stok tersedia di bawah minimum. Segera catat pasokan.
+          ⚠️ Stok tersedia di bawah minimum. Segera catat pasokan.
         </div>
       </div>
     </div>
@@ -265,13 +265,13 @@ const today = computed(() => formatDate(new Date().toISOString()))
     <!-- Quick Links -->
     <div class="quick-links">
       <NuxtLink to="/admin/inventory/movements" class="quick-link">
-        Ã°Å¸â€œÅ“ Riwayat Pergerakan Stok
+        📜 Riwayat Pergerakan Stok
       </NuxtLink>
       <NuxtLink to="/admin/inventory/receipts" class="quick-link">
-        Ã°Å¸Å¡Å¡ Catat Pasokan Agen
+        🚚 Catat Pasokan Agen
       </NuxtLink>
       <NuxtLink to="/admin/inventory/adjustments" class="quick-link">
-        Ã¢Å¡â„¢Ã¯Â¸Â Koreksi Stok Fisik
+        ⚙️ Koreksi Stok Fisik
       </NuxtLink>
     </div>
   </div>

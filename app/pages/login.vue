@@ -74,7 +74,7 @@ async function handleLogin() {
 
       <!-- Alert Error Banner jika kredensial/status ditolak -->
       <div v-if="serverError" class="auth-error-banner" role="alert">
-        <span class="error-banner-icon">âš ï¸</span>
+        <span class="error-banner-icon">⚠️</span>
         <div class="error-banner-text">{{ serverError }}</div>
       </div>
 

@@ -30,7 +30,7 @@ const roleNameMap: Record<string, string> = {
         aria-label="Buka menu navigasi"
         @click="$emit('toggle-sidebar')"
       >
-        â˜°
+        ☰
       </button>
 
       <div class="header-brand">
@@ -49,7 +49,7 @@ const roleNameMap: Record<string, string> = {
       >
         <span class="preview-dot" />
         <span class="role-text">{{ roleNameMap[role] }}</span>
-        <span class="switch-hint">Ganti â–¼</span>
+        <span class="switch-hint">Ganti ▼</span>
       </button>
 
       <!-- User Profile Menu -->
@@ -71,10 +71,10 @@ const roleNameMap: Record<string, string> = {
           </div>
           <div class="dropdown-divider" />
           <NuxtLink to="/profile" class="dropdown-link" @click="close">
-            ðŸ‘¤ Profil & Sandi
+            👤 Profil & Sandi
           </NuxtLink>
           <NuxtLink to="/" class="dropdown-link" @click="close">
-            ðŸ  Switcher Preview
+            🏠 Switcher Preview
           </NuxtLink>
           <div class="dropdown-divider" />
           <button class="dropdown-link text-danger" @click="close(); logout()">
@@ -103,7 +103,7 @@ const roleNameMap: Record<string, string> = {
           :class="{ 'is-active': role === 'admin' }"
           @click="switchRole('admin'); isRoleModalOpen = false; navigateTo('/admin')"
         >
-          <div class="role-icon">ðŸ‘‘</div>
+          <div class="role-icon">👑</div>
           <div class="role-details">
             <strong>Admin (Pemilik Pangkalan)</strong>
             <span>Akses penuh: dashboard agregat, stok, akun, produk, dan laporan usaha.</span>
@@ -116,7 +116,7 @@ const roleNameMap: Record<string, string> = {
           :class="{ 'is-active': role === 'karyawan' }"
           @click="switchRole('karyawan'); isRoleModalOpen = false; navigateTo('/staff')"
         >
-          <div class="role-icon">ðŸ‘·</div>
+          <div class="role-icon">👷</div>
           <div class="role-details">
             <strong>Karyawan (Petugas Operasional)</strong>
             <span>Akses operasional: pesanan masuk, serah-terima, pasokan, dan penjualan langsung.</span>
@@ -129,7 +129,7 @@ const roleNameMap: Record<string, string> = {
           :class="{ 'is-active': role === 'pengecer' }"
           @click="switchRole('pengecer'); isRoleModalOpen = false; navigateTo('/retailer')"
         >
-          <div class="role-icon">ðŸª</div>
+          <div class="role-icon">🏪</div>
           <div class="role-details">
             <strong>Pengecer B2B (Mitra Warung)</strong>
             <span>Tampilan mobile-first: katalog, stok tersedia, keranjang, pesanan, dan tagihan bon.</span>

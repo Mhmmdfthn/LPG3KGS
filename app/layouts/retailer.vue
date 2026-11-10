@@ -8,10 +8,10 @@ function closeDrawer() {
 
 // Navigasi khusus Pengecer sesuai PG-22 s.d PG-27
 const retailerNavItems = [
-  { label: 'Katalog Produk', to: '/retailer/catalog', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ¢â‚¬â„¢' },
-  { label: 'Keranjang Pesanan', to: '/retailer/cart', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â' },
-  { label: 'Pesanan Saya', to: '/retailer/orders', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¦' },
-  { label: 'Profil Saya', to: '/profile', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚Â¤' }
+  { label: 'Katalog Produk', to: '/retailer/catalog', icon: '🛒' },
+  { label: 'Keranjang Pesanan', to: '/retailer/cart', icon: '🛍️' },
+  { label: 'Pesanan Saya', to: '/retailer/orders', icon: '📦' },
+  { label: 'Profil Saya', to: '/profile', icon: '👤' }
 ]
 </script>
 
@@ -20,7 +20,7 @@ const retailerNavItems = [
     <!-- Header -->
     <NavbarHeader
       role="pengecer"
-      title="Pemesanan LPG ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â B2B"
+      title="Pemesanan LPG — B2B"
       @toggle-sidebar="isMobileDrawerOpen = !isMobileDrawerOpen"
     />
 
@@ -61,7 +61,7 @@ const retailerNavItems = [
             <span class="brand-badge">PENGECER</span>
             <span class="drawer-title">Menu Utama</span>
           </div>
-          <button type="button" class="drawer-close-btn" @click="closeDrawer">ÃƒÂ¢Ã…â€œÃ¢â‚¬Â¢</button>
+          <button type="button" class="drawer-close-btn" @click="closeDrawer">✕</button>
         </div>
 
         <nav class="drawer-nav">
@@ -91,22 +91,22 @@ const retailerNavItems = [
     <!-- Mobile Bottom Navigation Bar -->
     <nav class="bottom-nav-bar hide-desktop" aria-label="Navigasi bawah mobile">
       <NuxtLink to="/retailer/catalog" class="bottom-nav-item" exact-active-class="is-active">
-        <span class="bottom-nav-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ¢â‚¬â„¢</span>
+        <span class="bottom-nav-icon">🛒</span>
         <span class="bottom-nav-label">Katalog</span>
       </NuxtLink>
       <NuxtLink to="/retailer/cart" class="bottom-nav-item" exact-active-class="is-active">
         <span class="bottom-nav-icon nav-icon-wrap">
-          ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â
+          🛍️
           <span v-if="cartCount > 0" class="cart-pill">{{ cartCount > 99 ? '99+' : cartCount }}</span>
         </span>
         <span class="bottom-nav-label">Keranjang</span>
       </NuxtLink>
       <NuxtLink to="/retailer/orders" class="bottom-nav-item" exact-active-class="is-active">
-        <span class="bottom-nav-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¦</span>
+        <span class="bottom-nav-icon">📦</span>
         <span class="bottom-nav-label">Pesanan</span>
       </NuxtLink>
       <NuxtLink to="/profile" class="bottom-nav-item" exact-active-class="is-active">
-        <span class="bottom-nav-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ‚Â¤</span>
+        <span class="bottom-nav-icon">👤</span>
         <span class="bottom-nav-label">Profil</span>
       </NuxtLink>
     </nav>
