@@ -11,6 +11,47 @@ const password = ref('')
 const showPassword = ref(false)
 const isLoading = ref(false)
 
+interface DemoAccount {
+  label: string
+  role: 'admin' | 'karyawan' | 'pengecer'
+  username: string
+  password: string
+}
+
+const runtimeConfig = useRuntimeConfig()
+const demoAccounts = computed<DemoAccount[]>(() => {
+  // Nilai bisa berupa array (dari nuxt.config) atau string JSON saat di-override env runtime.
+  const raw = runtimeConfig.public.demoAccounts as unknown
+  const accounts = typeof raw === 'string' ? safeParse(raw) : raw
+  if (!Array.isArray(accounts)) return []
+  return accounts.filter((account): account is DemoAccount =>
+    !!account && typeof account.username === 'string' && typeof account.password === 'string'
+  )
+})
+
+function safeParse(raw: string): unknown {
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return []
+  }
+}
+// Tombol cepat hanya muncul saat mode demo aktif (default: hanya di lingkungan dev).
+const showDemoAccounts = computed(() => Boolean(runtimeConfig.public.demoMode) && demoAccounts.value.length > 0)
+const activeDemoRole = ref('')
+
+async function quickLogin(account: DemoAccount) {
+  if (isLoading.value) return
+  activeDemoRole.value = account.role
+  identity.value = account.username
+  password.value = account.password
+  try {
+    await handleLogin()
+  } finally {
+    activeDemoRole.value = ''
+  }
+}
+
 const errors = reactive({
   identity: '',
   password: ''
@@ -120,6 +161,31 @@ async function handleLogin() {
         </div>
       </form>
 
+      <div v-if="showDemoAccounts" class="demo-login-box">
+        <div class="demo-login-head">
+          <span class="demo-login-tag">Akun demo</span>
+          <span class="demo-login-hint">Sekali klik langsung masuk</span>
+        </div>
+        <div class="demo-login-grid">
+          <BaseButton
+            v-for="account in demoAccounts"
+            :key="account.role"
+            type="button"
+            variant="secondary"
+            size="sm"
+            :loading="isLoading && activeDemoRole === account.role"
+            :disabled="isLoading"
+            @click="quickLogin(account)"
+          >
+            {{ account.label || account.role }}
+          </BaseButton>
+        </div>
+        <p class="demo-login-note">
+          Khusus demo/UAT. Akun dibuat lewat <code>npm run db:seed</code> dengan
+          <code>SEED_DEMO_ACCOUNTS=true</code>.
+        </p>
+      </div>
+
       <div class="auth-footer">
         <span>Belum memiliki akun pengecer?</span>
         <NuxtLink to="/register" class="auth-link">Daftar sebagai Pengecer</NuxtLink>
@@ -214,57 +280,57 @@ async function handleLogin() {
   top: 36px;
 }
 
-.quick-demo-box {
-  margin-top: var(--space-6);
+.demo-login-box {
+  margin-top: var(--space-5);
   padding: var(--space-3);
   background-color: var(--color-surface-subtle);
+  border: 1px dashed var(--color-border);
   border-radius: var(--radius-md);
-  text-align: center;
 }
 
-.demo-tag {
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--color-text-muted);
-  letter-spacing: 0.05em;
-  display: block;
+.demo-login-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
   margin-bottom: var(--space-2);
 }
 
-.demo-btn-group {
-  display: flex;
-  gap: var(--space-2);
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.quick-btn {
-  padding: 5px 12px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
+.demo-login-tag {
   font-size: var(--font-size-xs);
-  font-weight: 600;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.quick-btn:hover {
-  border-color: var(--color-primary-600);
-  background-color: var(--color-primary-100);
-  color: var(--color-primary-900);
-}
-
-.btn-state {
-  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--color-text-muted);
 }
 
-.btn-state:hover {
-  background-color: var(--color-warning-bg);
-  border-color: var(--color-warning);
-  color: var(--color-warning);
+.demo-login-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.demo-login-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.demo-login-note {
+  margin-top: var(--space-2);
+  font-size: 11px;
+  line-height: var(--line-height-normal);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.demo-login-note code {
+  font-size: 11px;
+}
+
+@media (max-width: 420px) {
+  .demo-login-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .auth-footer {
